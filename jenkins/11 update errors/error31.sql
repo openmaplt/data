@@ -1,0 +1,48 @@
+create or replace function error31() returns void
+as '
+declare
+  c record;
+begin
+  delete from errors where source = ''lt'' and error_type = 1031;
+  for c in (select osm_id
+                  ,osm_timestamp
+                  ,osm_user
+                  ,''neteisingas vėžių tipas, turi būti gradeN'' descr
+              from planet_osm_line
+             where highway = ''track''
+               and (tracktype is not null and
+                    tracktype not in (''grade1'',
+                                      ''grade2'',
+                                      ''grade3'',
+                                      ''grade4'',
+                                      ''grade5''
+                                      ))) loop
+    insert into errors (
+      source,
+      schema,
+      error_id,
+      error_type,
+      error_name,
+      object_type,
+      object_id,
+      description,
+      first_occurrence,
+      last_checked,
+      object_timestamp,
+      user_name
+    ) values (
+      ''lt'', -- source
+      null, -- schema
+      nextval(''error_seq''), -- error_id
+      1031, -- error_type
+      ''broken track type'', -- error_name
+      ''way'', -- object_type
+      c.osm_id, -- object_id
+      c.descr, -- description
+      now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
+      now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
+      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
+      c.osm_user
+    );
+  end loop;
+end' language plpgsql;
