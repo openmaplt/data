@@ -6,7 +6,6 @@ begin
   delete from errors where source = ''lt'' and error_type = 1035;
   for c in (select osm_id
                   ,osm_timestamp
-                  ,osm_user
                   ,''netinkami simboliai pavadinime'' descr
                   ,''node'' typ
               from planet_osm_point
@@ -15,7 +14,6 @@ begin
             union all
             select osm_id
                   ,osm_timestamp
-                  ,osm_user
                   ,''netinkami simboliai pavadinime'' descr
                   ,''way'' typ
               from planet_osm_line
@@ -34,7 +32,6 @@ begin
             union all
             select osm_id
                   ,osm_timestamp
-                  ,osm_user
                   ,''netinkami simboliai pavadinime'' descr
                   ,''way'' typ
               from planet_osm_polygon
@@ -68,8 +65,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -81,8 +77,7 @@ begin
       c.descr, -- description
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now()  --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
     );
   end loop;
 end' language plpgsql;

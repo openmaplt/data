@@ -4,7 +4,7 @@ declare
   c record;
 begin
   delete from errors where source = ''lt'' and error_type = 1027;
-  for c in (select ''way'' typ, p.osm_id,  p.osm_timestamp, p.osm_user, ''Pasenęs žymėjimas „farm“'' descr
+  for c in (select ''way'' typ, p.osm_id,  p.osm_timestamp, ''Pasenęs žymėjimas „farm“'' descr
               from planet_osm_polygon p
              where landuse = ''farm''
            order by 1, 2
@@ -20,8 +20,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -33,8 +32,7 @@ begin
       c.descr, -- description
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now() --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
     );
   end loop;
 end' language plpgsql;

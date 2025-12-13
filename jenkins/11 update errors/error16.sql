@@ -4,7 +4,7 @@ declare
   c record;
 begin
   delete from errors where source = ''lt'' and error_type = 1016;
-  for c in (select osm_id, osm_timestamp, osm_user, ''node'' "type", amenity
+  for c in (select osm_id, osm_timestamp, ''node'' "type", amenity
               from planet_osm_point
              where amenity not in (
                        ''animal_boarding'',
@@ -46,6 +46,7 @@ begin
                        ''childcare'', -- ????
                        ''cinema'',
                        ''clinic'',
+                       ''cloakroom'',
                        ''clock'',
                        ''clothes_dryer'',
                        ''coast_guard'',
@@ -180,7 +181,7 @@ begin
                        ''waste_transfer_station'',
                        ''weighbridge'')
 union all
-select osm_id, osm_timestamp, osm_user, ''way'' "type", amenity
+select osm_id, osm_timestamp, ''way'' "type", amenity
   from planet_osm_polygon
  where amenity not in (''animal_boarding'',
                        ''animal_shelter'',
@@ -219,6 +220,7 @@ select osm_id, osm_timestamp, osm_user, ''way'' "type", amenity
                        ''childcare'', -- ????
                        ''cinema'',
                        ''clinic'',
+                       ''cloakroom'',
                        ''clock'',
                        ''clothes_dryer'',
                        ''coast_guard'',
@@ -362,8 +364,7 @@ select osm_id, osm_timestamp, osm_user, ''way'' "type", amenity
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -375,8 +376,7 @@ select osm_id, osm_timestamp, osm_user, ''way'' "type", amenity
       ''amenity='' || c.amenity, -- description
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now()  --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
     );
   end loop;
 end' language plpgsql;

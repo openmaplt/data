@@ -5,7 +5,7 @@ declare
 begin
   raise notice ''Starting calculation of error 08'';
   delete from errors where source = ''lt'' and error_type = 1008;
-  for c in (select osm_id, osm_timestamp, osm_user, p."addr:housenumber" as number
+  for c in (select osm_id, osm_timestamp, p."addr:housenumber" as number
                   ,st_x(st_transform(st_centroid(p.way), 4326)) * 1000000 as lon
                   ,st_y(st_transform(st_centroid(p.way), 4326)) * 1000000 as lat
               from planet_osm_polygon p
@@ -37,8 +37,7 @@ begin
       last_checked,
       lon,
       lat,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -52,8 +51,7 @@ begin
       now(),
       c.lon,
       c.lat,
-      c.osm_timestamp,
-      c.osm_user
+      c.osm_timestamp
     );
   end loop;
 end' language plpgsql;

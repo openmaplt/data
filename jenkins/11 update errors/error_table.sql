@@ -22,7 +22,5 @@ create table errors (
  ,txt3 text
  ,txt4 text
  ,txt5 text
- ,user_name text
  ,fixed integer
 );
-grant all on errors to tomas;

@@ -4,7 +4,7 @@ declare
   c record;
 begin
   delete from errors where source = ''lt'' and error_type = 1017;
-  for c in (select osm_id, osm_timestamp, osm_user
+  for c in (select osm_id, osm_timestamp
                   ,st_x(st_transform(st_startpoint(way), 4326)) * 1000000 as lon
                   ,st_y(st_transform(st_startpoint(way), 4326)) * 1000000 as lat
               from planet_osm_line
@@ -23,8 +23,7 @@ begin
       last_checked,
       lon,
       lat,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -38,8 +37,7 @@ begin
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       c.lon,
       c.lat,
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now()  --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
     );
   end loop;
 end' language plpgsql;

@@ -7,7 +7,6 @@ begin
   for c in (select ''node'' typ,
                    p.osm_id,
                    p.osm_timestamp,
-                   p.osm_user,
                    st_x(st_transform(p.way, 4326)) * 1000000 as lon,
                    st_y(st_transform(p.way, 4326)) * 1000000 as lat,
                    ''Nepilnas adresas'' descr
@@ -22,7 +21,6 @@ begin
             select ''way'' typ,
                    p.osm_id,
                    p.osm_timestamp,
-                   p.osm_user,
                    st_x(st_transform(st_centroid(p.way), 4326)) * 1000000 as lon,
                    st_y(st_transform(st_centroid(p.way), 4326)) * 1000000 as lat,
                    ''Nepilnas adresas'' descr
@@ -49,8 +47,7 @@ begin
       last_checked,
       lat,
       lon,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -64,8 +61,7 @@ begin
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       c.lat,
       c.lon,
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now() --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
     );
   end loop;
 end' language plpgsql;

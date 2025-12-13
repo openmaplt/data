@@ -5,7 +5,7 @@ declare
 begin
   raise notice ''Starting calculation of error 02'';
   delete from errors where source = ''lt'' and error_type = 1002;
-  for c in (select osm_id, osm_timestamp, osm_user
+  for c in (select osm_id, osm_timestamp
               from planet_osm_polygon
              where "natural" = ''wetland''
                and wetland is null) loop
@@ -20,8 +20,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -33,8 +32,7 @@ begin
       ''nenurodytas pelkės tipas '', -- description
       c.osm_timestamp,
       now(),
-      c.osm_timestamp,
-      c.osm_user
+      c.osm_timestamp
     );
   end loop;
 end' language plpgsql;

@@ -7,7 +7,6 @@ begin
   delete from errors where source = ''lt'' and error_type = 1045;
   for c in (select p.osm_id osm_id
                   ,p.osm_timestamp
-                  ,p.osm_user
                   ,''reedbed tik virš water'' descr
                   ,st_x(st_transform(st_centroid(p.way), 4326)) * 1000000 as lon
                   ,st_y(st_transform(st_centroid(p.way), 4326)) * 1000000 as lat
@@ -32,8 +31,7 @@ begin
       last_checked,
       lon,
       lat,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -47,8 +45,7 @@ begin
       now(),
       c.lon,
       c.lat,
-      c.osm_timestamp,
-      c.osm_user
+      c.osm_timestamp
     );
   end loop;
 end' language plpgsql;

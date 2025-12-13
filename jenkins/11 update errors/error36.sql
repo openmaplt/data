@@ -7,7 +7,6 @@ begin
   delete from errors where source = ''lt'' and error_type = 1036;
   for c in (select p1.osm_id osm_id
                   ,p1.osm_timestamp
-                  ,p1.osm_user
                   ,''panaikinti pastatų persidengimą '' || p2.osm_id descr
               from planet_osm_polygon p1
                   ,planet_osm_polygon p2
@@ -31,8 +30,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -44,8 +42,7 @@ begin
       c.descr, -- description
       c.osm_timestamp,
       now(),
-      c.osm_timestamp,
-      c.osm_user
+      c.osm_timestamp
     );
   end loop;
 end' language plpgsql;

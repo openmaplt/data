@@ -7,7 +7,6 @@ begin
   delete from errors where source = ''lt'' and error_type = 1047;
   for c in (select d.osm_id osm_id
                   ,d.osm_timestamp
-                  ,d.osm_user
                   ,''užtvanka negali eiti tvenkinio kraštu'' descr
               from planet_osm_line d
                   ,planet_osm_polygon w
@@ -28,8 +27,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -41,8 +39,7 @@ begin
       c.descr, -- description
       c.osm_timestamp,
       now(),
-      c.osm_timestamp,
-      c.osm_user
+      c.osm_timestamp
     );
   end loop;
 end' language plpgsql;

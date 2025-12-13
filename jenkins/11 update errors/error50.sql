@@ -7,7 +7,6 @@ begin
   delete from errors where source = ''lt'' and error_type = 1050;
   for c in (select osm_id osm_id
                   ,osm_timestamp
-                  ,osm_user
                   ,''missing tracktype'' descr
                   ,st_x(st_transform(st_startpoint(way), 4326)) * 1000000 as lon
                   ,st_y(st_transform(st_startpoint(way), 4326)) * 1000000 as lat
@@ -33,8 +32,7 @@ begin
       last_checked,
       lat,
       lon,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -48,8 +46,7 @@ begin
       now(),
       c.lat,
       c.lon,
-      c.osm_timestamp,
-      c.osm_user
+      c.osm_timestamp
     );
   end loop;
 end' language plpgsql;

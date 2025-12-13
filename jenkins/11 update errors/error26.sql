@@ -4,12 +4,12 @@ declare
   c record;
 begin
   delete from errors where source = ''lt'' and error_type = 1026;
-  for c in (select ''node'' typ, p.osm_id, p.osm_timestamp, p.osm_user, ''Nėra addr:city'' descr
+  for c in (select ''node'' typ, p.osm_id, p.osm_timestamp, ''Nėra addr:city'' descr
               from planet_osm_point p
              where p."addr:city" is null
                and p."addr:housenumber" is not null
             union
-            select ''way'' typ, p.osm_id,  p.osm_timestamp, p.osm_user, ''Nėra addr:city'' descr
+            select ''way'' typ, p.osm_id,  p.osm_timestamp, ''Nėra addr:city'' descr
               from planet_osm_polygon p
              where p."addr:city" is null
                and p."addr:housenumber" is not null
@@ -26,8 +26,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -39,8 +38,7 @@ begin
       c.descr, -- description
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now() --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
     );
   end loop;
 end' language plpgsql;

@@ -5,7 +5,7 @@ declare
 begin
   raise notice ''Starting calculation of error 11'';
   delete from errors where source = ''lt'' and error_type = 1011;
-  for c in (select osm_id, osm_timestamp, osm_user
+  for c in (select osm_id, osm_timestamp
               from planet_osm_line p
              where p.oneway is null
                and coalesce(p.highway, ''-'') in (''motorway_link'', ''trunk_link'', ''primary_link'', ''secondary_link'')
@@ -21,8 +21,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null,
@@ -34,8 +33,7 @@ begin
       ''nėra oneway žymos'', -- description
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now()  --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"'')
     );
   end loop;
 end' language plpgsql;

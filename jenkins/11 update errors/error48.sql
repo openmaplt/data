@@ -7,7 +7,6 @@ begin
   delete from errors where source = ''lt'' and error_type = 1048;
   for c in (select osm_id osm_id
                   ,osm_timestamp
-                  ,osm_user
                   ,''keisti į landuse=meadow arba landuse=grass+landcover=grass'' descr
               from planet_osm_polygon
              where "natural" = ''grassland'' or
@@ -25,8 +24,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -38,8 +36,7 @@ begin
       c.descr, -- description
       c.osm_timestamp,
       now(),
-      c.osm_timestamp,
-      c.osm_user
+      c.osm_timestamp
     );
   end loop;
 end' language plpgsql;

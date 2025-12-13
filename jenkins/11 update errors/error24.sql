@@ -4,7 +4,7 @@ declare
   c record;
 begin
   delete from errors where source = ''lt'' and error_type = 1024;
-  for c in (select ''node'' typ, p.osm_id, p.osm_timestamp, p.osm_user
+  for c in (select ''node'' typ, p.osm_id, p.osm_timestamp
                   ,p."addr:city" || '' '' || p."addr:street" || '' '' || p."addr:housenumber" || '' už ribų'' descr
                   ,st_x(st_transform(p.way, 4326)) * 1000000 as lon
                   ,st_y(st_transform(p.way, 4326)) * 1000000 as lat
@@ -27,7 +27,7 @@ begin
                  ,849352405  -- Kanapelkos teritorijoje Molėtų adresai
                )
             union
-            select ''way'' typ, p.osm_id, p.osm_timestamp, p.osm_user
+            select ''way'' typ, p.osm_id, p.osm_timestamp
                   ,p."addr:city" || '' '' || p."addr:street" || '' '' || p."addr:housenumber" || '' už ribų'' descr
                   ,st_x(st_transform(st_centroid(p.way), 4326)) * 1000000 as lon
                   ,st_y(st_transform(st_centroid(p.way), 4326)) * 1000000 as lat
@@ -62,8 +62,7 @@ begin
       last_checked,
       lat,
       lon,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -77,8 +76,7 @@ begin
       now(),
       c.lat,
       c.lon,
-      c.osm_timestamp,
-      c.osm_user
+      c.osm_timestamp
     );
   end loop;
 end' language plpgsql;

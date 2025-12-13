@@ -5,7 +5,7 @@ declare
 begin
   raise notice ''Starting calculation of error 12'';
   delete from errors where source = ''lt'' and error_type = 1012;
-  for c in (select osm_id, highway, osm_timestamp, osm_user
+  for c in (select osm_id, highway, osm_timestamp
               from planet_osm_line
              where highway not in (''motorway'', ''motorway_link'',
                                    ''trunk'', ''trunk_link'',
@@ -42,8 +42,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -55,8 +54,7 @@ begin
       ''neaiškus highway'', -- description
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now()  --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"'')
     );
   end loop;
 end' language plpgsql;

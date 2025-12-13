@@ -8,7 +8,6 @@ begin
   for c in (select p.osm_id osm_id
                   ,w.osm_id w_osm_id
                   ,p.osm_timestamp
-                  ,p.osm_user
               from planet_osm_line p
                   ,planet_osm_polygon w
              where p.waterway in (''stream'', ''river'')
@@ -33,8 +32,7 @@ begin
         description,
         first_occurrence,
         last_checked,
-        object_timestamp,
-        user_name
+        object_timestamp
       ) values (
         ''lt'', -- source
         null, -- schema
@@ -46,8 +44,7 @@ begin
        ''upė ežere '' || c.w_osm_id || '' turi turėti žymą waterway:speed=0'', -- description
         c.osm_timestamp,
         now(),
-        c.osm_timestamp,
-        c.osm_user
+        c.osm_timestamp
       );
   end loop;
 end' language plpgsql;

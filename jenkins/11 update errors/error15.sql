@@ -4,7 +4,7 @@ declare
   c record;
 begin
   delete from errors where source = ''lt'' and error_type = 1015;
-  for c in (select osm_id, osm_timestamp, osm_user
+  for c in (select osm_id, osm_timestamp
               from planet_osm_line
              where highway in (''primary'', ''primary_link'', ''secondary'', ''secondary_link'', ''tertiary'', ''tertiary_link'')
                and surface is null) loop
@@ -19,8 +19,7 @@ begin
       description,
       first_occurrence,
       last_checked,
-      object_timestamp,
-      user_name
+      object_timestamp
     ) values (
       ''lt'', -- source
       null, -- schema
@@ -32,8 +31,7 @@ begin
       ''nėra dangos informacijos'', -- description
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
       now(), --to_date(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      now(), --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
-      c.osm_user
+      now()  --to_timestamp(c.osm_timestamp, ''YYYY-MM-DD"T"HH24:MI:SS"Z"''),
     );
   end loop;
 end' language plpgsql;
