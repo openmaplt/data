@@ -30,7 +30,7 @@ export default async function ChangesetTable({
       header: 'OSM pakeitimas',
       cell: (row) => (
         <a
-          href={`http://www.openstreetmap.org/browse/changeset/${row.id}`}
+          href={`https://www.openstreetmap.org/browse/changeset/${row.id}`}
           target="_blank"
           rel="noreferrer"
           className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 font-medium"
@@ -48,8 +48,8 @@ export default async function ChangesetTable({
           <a
             href={
               isApprovedTable
-                ? `http://osmhistory.appspot.com/changeset/${row.id}`
-                : `http://openmap-168413.ew.r.appspot.com/changeset/${row.id}`
+                ? `https://osmhistory.appspot.com/changeset/${row.id}`
+                : `https://openmap-168413.ew.r.appspot.com/changeset/${row.id}`
             }
             target="_blank"
             rel="noreferrer"

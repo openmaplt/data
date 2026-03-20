@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -25,7 +25,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Install production dependencies only
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm ci --omit=dev
 
 # Copy build artifacts and necessary files
 COPY --from=builder /app/.next ./.next
