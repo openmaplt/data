@@ -6,4 +6,3 @@ node_modules
 LICENSE
 ../.github
 biome.json
-tsconfig.json
