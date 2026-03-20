@@ -7,4 +7,3 @@ LICENSE
 .github
 biome.json
 tsconfig.json
-package-lock.json
