@@ -84,25 +84,20 @@ jobs:
               echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
             fi
             
-            # Pull latest docker-compose.prod.yml from the sub-module
+            # Pull latest docker-compose.prod.yml
             curl -o docker-compose.prod.yml https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/patrulis/docker-compose.prod.yml
             
             # Login to GitHub Container Registry
-            # Get the lowercase repo name for Docker pull
-            REPO_NAME_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
             echo ${{ secrets.GHCR_PAT }} | docker login ${{ env.REGISTRY }} -u paumas --password-stdin
             
             # Pull correct image tag
-            IMAGE_TAG=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || 'latest' }}
-            docker pull ${{ env.REGISTRY }}/${REPO_NAME_LOWER}:${IMAGE_TAG}
+            IMAGE_TAG=${{ github.event_name == 'workflow_dispatch' && inputs.tag || 'latest' }}
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}
             
             # Stop and remove old container
             docker compose -f docker-compose.prod.yml down
             
             # Start new container
-            # Update image name to lowercase for docker-compose as well
-            sed -i "s|ghcr.io/\${GITHUB_REPOSITORY}:latest|ghcr.io/${REPO_NAME_LOWER}:${IMAGE_TAG}|g" docker-compose.prod.yml
-            
             docker compose -f docker-compose.prod.yml up -d
             
             # Clean up old images
