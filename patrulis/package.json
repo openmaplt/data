@@ -1,0 +1,29 @@
+{
+  "name": "patrulis",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "biome check --fix",
+    "format": "biome format --write"
+  },
+  "dependencies": {
+    "lucide-react": "^0.577.0",
+    "next": "16.2.0",
+    "pg": "^8.20.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.8",
+    "@tailwindcss/postcss": "4.2.2",
+    "@types/node": "22.9.0",
+    "@types/pg": "^8.18.0",
+    "@types/react": "19.0.12",
+    "@types/react-dom": "19.0.4",
+    "tailwindcss": "4.2.2",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.env*
+*.md
+LICENSE
+.github
+biome.json
+tsconfig.json
+package-lock.json
