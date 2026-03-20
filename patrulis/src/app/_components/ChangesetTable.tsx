@@ -1,6 +1,6 @@
 import { Check, Clock, ExternalLink, RotateCcw } from 'lucide-react';
-import { approveChangeset, unapproveChangeset } from '@/app/actions';
 import DataTable, { type Column } from '@/components/DataTable';
+import { approveChangeset, unapproveChangeset } from '@/lib/actions/changesets';
 import { isAuthenticated } from '@/lib/auth';
 import type { Changeset } from '@/lib/data/changesets';
 import StatusIcon from './StatusIcon';
@@ -124,7 +124,7 @@ export default async function ChangesetTable({
         >
           <button
             type="submit"
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus:ring-2 focus:ring-offset-1 focus:outline-none ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus:ring-2 focus:ring-offset-1 focus:outline-none cursor-pointer ${
               isApprovedTable
                 ? 'text-rose-700 bg-rose-100 hover:bg-rose-200 focus:ring-rose-500/50'
                 : 'text-emerald-700 bg-emerald-100 hover:bg-emerald-200 focus:ring-emerald-500/50'

@@ -1,5 +1,5 @@
+import { loginAction } from '@/lib/actions/auth';
 import LoginForm from './_components/LoginForm';
-import { loginAction } from './actions';
 
 export default function LoginPage() {
   return <LoginForm loginAction={loginAction} />;

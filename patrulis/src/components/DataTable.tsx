@@ -14,13 +14,14 @@ interface DataTableProps<T> {
   data: T[];
   emptyMessage?: string;
   getRowClassName?: (row: T) => string;
+  getRowKey?: (row: T) => string | number;
 }
-
-export default function DataTable<T extends { id: string | number }>({
+export default function DataTable<T extends Record<string, unknown>>({
   columns,
   data,
   emptyMessage = 'Nėra duomenų',
   getRowClassName,
+  getRowKey,
 }: DataTableProps<T>) {
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm bg-white overflow-hidden">
@@ -55,9 +56,13 @@ export default function DataTable<T extends { id: string | number }>({
               </td>
             </tr>
           ) : (
-            data.map((row) => (
+            data.map((row, idx) => (
               <tr
-                key={row.id}
+                key={
+                  getRowKey
+                    ? getRowKey(row)
+                    : ((row?.id as string | number | undefined) ?? idx)
+                }
                 className={`transition-colors ${getRowClassName ? getRowClassName(row) : 'bg-white hover:bg-slate-50'}`}
               >
                 {columns.map((col, colIdx) => (
