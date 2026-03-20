@@ -1,14 +1,23 @@
 import type React from 'react';
 
-export interface Column<T> {
+interface ColumnBase<T> {
   header: string;
-  key?: keyof T;
-  cell?: (row: T) => React.ReactNode;
   headerClassName?: string;
   cellClassName?: string;
   align?: 'left' | 'center' | 'right';
 }
 
+interface KeyColumn<T> extends ColumnBase<T> {
+  key: keyof T;
+  cell?: never;
+}
+
+interface CellColumn<T> extends ColumnBase<T> {
+  key?: never;
+  cell: (row: T) => React.ReactNode;
+}
+
+export type Column<T> = KeyColumn<T> | CellColumn<T>;
 interface DataTableProps<T> {
   columns: Column<T>[];
   data: T[];
