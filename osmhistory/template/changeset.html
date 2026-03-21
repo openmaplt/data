@@ -1,0 +1,212 @@
+{% extends "template/basepage.html" %}
+
+{% block title %}Changeset {{changeset._id}}{% endblock %}
+{% block headerScript %}
+    <script language="javascript">
+    var createdMaps = []; //When map is created its nodeId is added to this array;
+    $(window).load(function(){
+		  $('#global-view-opt').button();
+		  $('#filter-chageset-opt').button();
+		  $('#filter-objects-opt').button();
+
+      $('.node,.way,.relation .blocks-toggle').button().on('click', '.btn' ,function() {
+        var button = $(this);
+        var blockType = button.data('value')
+        var isToggled = button.hasClass('active');
+        var objectId = parseInt(button.parent().parent().parent().parent().data('objectid'));
+        setBlockVisible(objectId, blockType, !isToggled);
+      });
+
+      $('#global-view-opt').button().on('click', '.btn', function() {
+        var button = $(this);
+        var blockType = button.data('value')
+        var isToggled = button.hasClass('active');
+        setGlobalBlockVisible(blockType, !isToggled);
+      });
+
+      $('#filter-chageset-opt').button().on('click', '.btn', function() {
+        var button = $(this);
+        var chagesetType = button.data('value')
+        var isToggled = button.hasClass('active');
+        setGlobalChangesetVisible(chagesetType, !isToggled);
+      });
+
+      $('#filter-objects-opt').button().on('click', '.btn', function() {
+        var button = $(this);
+        var objectType = button.data('value')
+        var isToggled = button.hasClass('active');
+        setGlobalObjectsVisible(objectType, !isToggled);
+      });
+
+      $('#api-details').click(function (){
+        var datailsBlock = $('#api-links-list');
+        if(datailsBlock.is(':visible')) {
+          datailsBlock.hide();
+        }
+        else {
+          datailsBlock.show(); 
+        }
+      });
+    });
+
+    function setBlockVisible(objectId, blockType, state) {
+      var block = $("#object"+objectId+" ."+blockType+"-block")
+      if(state) {
+        block.show();
+        if(blockType=='map') {
+          createObjectMapIfNeeded(objectId);
+        }
+      }
+      else {
+        block.hide();
+      }
+    }
+
+    function setGlobalBlockVisible(blockType, state) {
+      var blocks = $("."+blockType+"-block")
+      if(state) {
+        blocks.show();
+        if(blockType == 'map') {
+          createAllMaps();
+        }
+      }
+      else {
+        blocks.hide();
+      }
+
+      var buttons = $(".btn.btn-mini[data-value="+blockType+"]");
+      if(state) {
+        buttons.addClass('active');
+      }
+      else {
+        buttons.removeClass('active');
+      }
+    }
+
+    function setGlobalObjectsVisible(objectType, state) {
+      var blocks = $("."+objectType)
+      if(state) {
+        blocks.show();
+      }
+      else {
+        blocks.hide();
+      }
+    }
+
+    function setGlobalChangesetVisible(chagesetType, state) {
+      var block = $("."+chagesetType+"-objects")
+      if(state) {
+        block.show();
+      }
+      else {
+        block.hide();
+      }
+    }
+
+    function createObjectMapIfNeeded(objectId) {
+      if(createdMaps.indexOf(objectId)==-1 && $('#object'+objectId+' .map-block').is(':visible')) {
+          createdMaps.push(objectId)
+          window['showMap'+objectId]();
+      }
+    }
+
+    function createAllMaps() {
+      $('.node,.way,.relation').each(function (index) {
+        var objectId = parseInt($(this).data('objectid'));
+        createObjectMapIfNeeded(objectId)
+      });
+    }
+    </script>
+{% endblock %}
+
+{% block content %}
+      <div class="row">
+        <div class="span4 control-group">
+            <label class="control-label" for="global-view-opt">View</label>
+            <div class="btn-group navs controls" data-toggle="buttons-checkbox" id="global-view-opt">
+                <button class="btn active" type="button" data-value="info">Info</button>
+                <button class="btn" type="button" data-value="tags">Tags</button>
+                <button class="btn" type="button" data-value="xml">XML</button>
+                <button class="btn" type="button" data-value="map">Map</button>
+            </div>
+        </div>
+
+        <div class="span4 control-group">
+            <label class="control-label" for="filter-chageset-opt">Filter changes</label>
+            <div class="btn-group navs controls" data-toggle="buttons-checkbox" id="filter-chageset-opt">
+                <button class="btn active" type="button" data-value="created">Created</button>
+                <button class="btn active" type="button" data-value="modified">Modified</button>
+                <button class="btn active" type="button" data-value="deleted">Deleted</button>
+            </div>
+        </div>
+
+        <div class="span4 control-group">
+            <label class="control-label" for="filter-objects-opt">Objects</label>
+            <div class="btn-group navs controls" data-toggle="buttons-checkbox" id="filter-objects-opt">
+                <button class="btn active" type="button" data-value="node">Nodes</button>
+                <button class="btn active" type="button" data-value="way">Ways</button>
+                <button class="btn active" type="button" data-value="relation">Relations</button>
+            </div>
+        </div>
+      </div>
+
+    <div class="container created-objects">
+      <h2 align="center">Created</h2>
+      <hr/>
+      
+      <div class="row">
+        <!-- Left column -->
+        <div class="span6">
+          <div class="well">
+            <h3>None</h3>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="span6">
+        {% for obj in changeset.created %}
+           {{ renderer.toHtml(obj, 'toggle') }}
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="container modified-objects">
+      <!-- Modified section -->
+      <h2 align="center">Modified</h2>
+      <hr/>
+
+      {% for obj in changeset.modified %}
+         {{ renderer.toHtml(obj, 'diff') }}
+      {% endfor %}
+    </div>
+
+    <div class="container deleted-objects">
+      <h2 align="center">Deleted</h2>
+      <hr/>
+
+      <div class="row">
+        <!-- Left column -->
+        <div class="span6">
+        {% for obj in changeset.deleted %}
+           {{ renderer.toHtml(obj, 'toggle') }}
+        {% endfor %}
+        </div>
+
+        <!-- Right column -->
+        <div class="span6">
+          <div class="well">
+            <h3>None</h3>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <hr>
+    {%- if client.requestsCount > 0 %}
+    <p>Requests to OSM API: {{client.requestsCount}} in "elapsedTime" sec. <a id="api-details" class="btn">Details</a></p>
+    <pre id="api-links-list" class="prettyprint" style="display:none;">{%- for url in client.requestsUrls %}{{url}}
+{% endfor -%}</pre>
+    {% endif -%}
+{% endblock %}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .signin { position: absolute; top: -18px; right: 12px; }
+      .created-objects {
+        background-color: #FAFFFA;
+      }
+      .modified-objects {
+        background-color: #FAFAFF;
+      }
+      .deleted-objects {
+        background-color: #FFFAFA;
+      }
+    </style>
+    <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/static/css/osmhistory.css" rel="stylesheet">
+
+    <script src="/static/JS/jquery-1.7.2.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
+
+    {% block headerScript %}{%endblock%}
+    <!-- LeafLet -->
+    <link rel="stylesheet" href="/static/leaflet-0.4/leaflet.css" />
+    <script src="/static/leaflet-0.4/leaflet.js"></script>  
+    <script src="/static/JS/tools.js"></script>
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">OSM History Viewer</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="/help">Help</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      {%block content%}{%endblock%}
+      <footer>
+        <p>&copy; Company 2012, &copy; 0.2 Openmap 2020</p>
+      </footer>
+    </div> <!-- /container -->
+
+  </body>
+</html>

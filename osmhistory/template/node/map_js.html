@@ -1,0 +1,5 @@
+                {%- if color -%}
+    	        	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color}});
+            	{%- else -%}
+	            	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}});
+            	{%- endif -%}

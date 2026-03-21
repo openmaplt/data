@@ -1,0 +1,21 @@
+{% from 'template/node/node_macros.html' import node_info_block, node_map_block, node_map_js %}
+{% from 'template/object_macros.html' import blocks_toggle, object_tags_block, object_xml_block %}
+          <div class="node" id="object{{node._id}}" data-objectid="{{node._id}}">
+            <div class="row">
+              <div class="span3">
+                <h3>Node {{node._id}}:</h3>
+              </div>
+              {{ blocks_toggle() }}
+            </div>
+            {{ node_info_block(node) }}
+            {{ object_tags_block(node) }}
+            {{ object_xml_block(node) }}
+            {{ node_map_block(node) }}
+            <script language="javascript">
+            function showMap{{node._id}}() {
+              var map = createOsmMap('map{{node._id}}');
+              {{ node_map_js('map', node) }}
+              return map;
+            }
+            </script>
+          </div>

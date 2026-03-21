@@ -1,0 +1,65 @@
+{%- from 'template/node/node_macros.html' import node_map_js -%}
+{%- from 'template/way/way_macros.html' import way_map_js -%}
+{%- from 'template/relation/relation_macros.html' import relation_map_js -%}
+
+{% extends "template/basepage.html" %}
+
+{% block title %}Changeset {{changeset._id}}{% endblock %}
+{% block headerScript %}
+    <script language="javascript">
+    $(window).load(function(){
+      createMapBefore();
+      createMapAfter();
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+      <div class="row">
+        <!-- Left column -->
+        <div class="span6">
+          <p>Before</p>
+          <div id="mapBefore" style="height: 500px"></div>
+        </div>
+
+        <!-- Right column -->
+        <div class="span6">
+          <p>After</p>
+          <div id="mapAfter" style="height: 500px"></div>
+        </div>
+      </div>
+
+    <script language="javascript">
+    function createMapBefore() {
+      var mapBefore = createOsmMap('mapBefore');
+
+      {% for obj in changeset.modified %}
+        {{ renderer.toMapJs(obj.prevVersion, 'mapBefore', '\'blue\'') }}
+      {% endfor %}
+
+      {% for obj in changeset.deleted %}
+        {{ renderer.toMapJs(obj, 'mapBefore', '\'red\'') }}
+      {% endfor %}
+    }
+
+    function createMapAfter() {
+      var mapAfter = createOsmMap('mapAfter');
+
+      {% for obj in changeset.created %}
+        {{ renderer.toMapJs(obj, 'mapAfter', '\'green\'') }}
+      {% endfor %}
+
+      {% for obj in changeset.modified %}
+        {{ renderer.toMapJs(obj, 'mapAfter', '\'blue\'') }}
+      {% endfor %}
+    }
+    </script>
+
+    <hr>
+    {%- if client.requestsCount > 0 %}
+    <p>Requests to OSM API: {{client.requestsCount}} in "elapsedTime" sec. <a id="api-details" class="btn">Details</a></p>
+    <pre id="api-links-list" class="prettyprint" style="display:none;">{%- for url in client.requestsUrls %}{{url}}
+{% endfor -%}</pre>
+    {% endif -%}
+
+{% endblock %}

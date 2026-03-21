@@ -1,0 +1,48 @@
+{%- from 'template/way/way_macros.html' import way_info_block, way_map_block, way_map_with_nodes_js -%}
+{%- from 'template/object_macros.html' import blocks_toggle, object_tags_block, object_xml_block, versions_div -%}
+{% extends "template/basepage.html" %}
+
+{% block title %}Way {{way._id}}{% endblock %}
+{% block headerScript %}
+    <script language="javascript">
+    $(window).load(function () {
+      showMap{{way._id}}();
+    });
+    </script>
+{%endblock%}
+
+{% block content %}
+      <h2>Way {{way._id}}</h2>
+      <p>versions:</p>
+      {{ versions_div('/way/'~way._id~'/%d', maxVersion, way.version)}}
+      {% if way.visible == False %}
+		<div class="alert">
+		  <button type="button" class="close" data-dismiss="alert">?</button>
+		  <strong>Warning!</strong> way is deleted by {{way.user}} (uid={{way.uid}}) at
+		  changeset <a href="/changeset/{{way.changeset}}">{{way.changeset}}</a>.
+		</div>
+      {% endif %}
+
+      {{ way_info_block(way) }}
+      {% if way.visible %}
+	      {{ object_tags_block(way, True) }}
+	      {{ way_map_block(way, None, True, 400) }}
+      <script language="javascript">
+      function showMap{{way._id}}() {
+        var map = createOsmMap('map{{way._id}}');
+        {{ way_map_with_nodes_js('map', way) }}
+        return map;
+      }
+      </script>
+      {% endif %}
+
+      {{ object_xml_block(way, True) }}
+
+      <hr>
+      {%- if client.requestsCount > 0 %}
+      <p>Requests to OSM API: {{client.requestsCount}} in "elapsedTime" sec. <a id="api-details" class="btn">Details</a></p>
+      <pre id="api-links-list" class="prettyprint" style="display:none;">{%- for url in client.requestsUrls %}{{url}}
+{% endfor -%}</pre>
+      {% endif -%}
+
+{%endblock%}

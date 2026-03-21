@@ -1,0 +1,64 @@
+{% from 'template/way/way_macros.html' import way_info_block, way_map_block, way_map_js %}
+{% from 'template/object_macros.html' import blocks_toggle, object_tags_block, object_xml_block %}
+          <div class="way diff" id="object{{way._id}}" data-objectid="{{way._id}}">
+            <div class="row">
+              <div class="span3 offset5">
+                <h3>Way {{way._id}}:</h3>
+              </div>
+
+              {{ blocks_toggle('offset1') }}
+            </div>
+
+            <div class="row">
+              <!-- Left column -->
+              <div class="span6">
+                {{ way_info_block(way.prevVersion) }}
+              </div>
+              <!-- Right column -->
+              <div class="span6">
+                {{ way_info_block(way) }}
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Left column -->
+              <div class="span6">
+                {{ object_tags_block(way.prevVersion) }}
+              </div>
+              <!-- Right column -->
+              <div class="span6">
+                {{ object_tags_block(way) }}
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Left column -->
+              <div class="span6">
+                {{ object_xml_block(way.prevVersion) }}
+              </div>
+              <!-- Right column -->
+              <div class="span6">
+                {{ object_xml_block(way) }}
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Left column -->
+              <div class="span6">
+                {{ way_map_block(way.prevVersion, 'left') }}
+              </div>
+              <!-- Right column -->
+              <div class="span6">
+                {{ way_map_block(way, 'right') }}
+              </div>
+              <script language="javascript">
+              function showMap{{way._id}}() {
+                var mapLeft = createOsmMap('map{{way._id}}left');
+                {{ way_map_js('mapLeft', way.prevVersion) }}
+
+                var mapRight = createOsmMap('map{{way._id}}right');
+                {{ way_map_js('mapRight', way) }}
+              }
+              </script>
+            </div>
+          </div>

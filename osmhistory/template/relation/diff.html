@@ -1,0 +1,64 @@
+{% from 'template/relation/relation_macros.html' import relation_info_block, relation_map_block, relation_map_js %}
+{% from 'template/object_macros.html' import blocks_toggle, object_tags_block, object_xml_block %}
+          <div class="relation diff" id="object{{relation._id}}" data-objectid="{{relation._id}}">
+            <div class="row">
+              <div class="span3 offset5">
+                <h3>Relation {{relation._id}}:</h3>
+              </div>
+
+              {{ blocks_toggle('offset1') }}
+            </div>
+
+            <div class="row">
+              <!-- Left column -->
+              <div class="span6">
+                {{ relation_info_block(relation.prevVersion) }}
+              </div>
+              <!-- Right column -->
+              <div class="span6">
+                {{ relation_info_block(relation) }}
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Left column -->
+              <div class="span6">
+                {{ object_tags_block(relation.prevVersion) }}
+              </div>
+              <!-- Right column -->
+              <div class="span6">
+                {{ object_tags_block(relation) }}
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Left column -->
+              <div class="span6">
+                {{ object_xml_block(relation.prevVersion) }}
+              </div>
+              <!-- Right column -->
+              <div class="span6">
+                {{ object_xml_block(relation) }}
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Left column -->
+              <div class="span6">
+                {{ relation_map_block(relation.prevVersion, 'left') }}
+              </div>
+              <!-- Right column -->
+              <div class="span6">
+                {{ relation_map_block(relation, 'right') }}
+              </div>
+              <script language="javascript">
+              function showMap{{relation._id}}() {
+                var mapLeft = createOsmMap('map{{relation._id}}left');
+                {{ relation_map_js('mapLeft', relation.prevVersion) }}
+
+                var mapRight = createOsmMap('map{{relation._id}}right');
+                {{ relation_map_js('mapRight', relation) }}
+              }
+              </script>
+            </div>
+          </div>

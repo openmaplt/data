@@ -1,0 +1,11 @@
+                var wayPoints = [
+                {%- for node in way.nodes -%}
+                  [{{node.lat}}, {{node.lon}}],
+                {% endfor -%}
+                ];
+
+                {%- if color -%}
+                addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color}});
+            	{%- else -%}
+                addWayToMap({{mapVar}}, {{way._id}}, wayPoints);
+            	{%- endif -%}

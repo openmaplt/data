@@ -1,0 +1,45 @@
+{% extends "template/basepage.html" %}
+
+{% block title %}OSM History viewer - FAQ{% endblock %}
+
+{% block content %}
+      <h2>F.A.Q.</h2>
+      <ul>
+      	<li><strong>Q: What is this site about?</strong></li>
+      	<li>A: This is tool to browse <a href="http://osm.org">OpenStreetMap</a> history. Each object on this map is tracked with all changes made by users. This tool allows you to see how some road or building on city boundaries looked liked before. The aim of this project is to browse changes visually and not by reading XML documents.</li>
+      	<li><strong>Q: Why does changeset is loaded so long?</strong></li>
+      	<li>A: To load and display all changeset data we must request all data of created or modified objects (ways, nodes, relations) and all previous versions of modified or removed objects. This takes much time because OSM API doesn't have methods to retrieve previous version of an object with all dependencies. And a lot of requests to OSM API are made. But after all changeset info is loaded from OpenStreetMap database it's cached and retrieved instantly on next page load.</li>
+      	<li><strong>Q: Do you work on OSM Foundation?</strong></li>
+      	<li>A: No. This project created just for fun.</li>
+      	<li><strong>Q: Is your tool opensource?</strong></li>
+      	<li>A: Yes. You can find it on <a href="https://bitbucket.org/strump/osm-history-viewer">Bitbucket</a>.</li>
+      </ul>
+      <h2>Technical F.A.Q.</h2>
+      <ul>
+      	<li><strong>Q: Does this site store OSM dump?</strong></li>
+      	<li>A: No. History viewer use OSM API to retrieve data. When some large data is loaded from OSM database (changeset info, relaion version or way version) it's cached in Google App Engine storage to minimize requests to API.</li>
+      	<li><strong>Q: Why don't use standard OSM history UI?</strong></li>
+      	<li>A: It's not user-friendly. And I want to see changes visually. Unfortunately OSM API is not good at getting full version of some object at any timestamp. And version number doesn't help.
+      	If you edir a road by moving some point you'll find that node version changed but way version is still the same. So road with some fixed version can look very different in different points of time.
+      		OSM API has no easy-to-use way to get some specific version of way. Some magic is needed:
+      		<ol>
+      			<li>Request version X with list of nodes IDs;</li>
+      			<li>Request each node coordinates at time of way version (one request for each node).</li>
+      		</ol>
+      		Loading relation version is even more strange
+      		<ol>
+      			<li>Request version X with list of ways IDs and nodes IDs.</li>
+      			<li>Request each node coordinates at time of relation version (one request for each node).</li>
+      			<li>Request each way version at time of relation (one request for each way).</li>
+      			<li>For each way request each node coordinates at time of relation version (one request for each node for each way).</li>
+      		</ol>
+      		So loading version of some big road (40 points) needs 41 request to API. Loading relation is even more expensive.
+      		To make visual difference of a changeset each modified way/relation/node must be loaded in two version: before and after. Each removed object must be loaded at previous version to show on map. You can easy count number of requests to build one simple page.
+      	</li>
+      	<li><strong>Q: Why Python and GAE?</strong></li>
+      	<li>A: Python is simple, powerful and awesom language. GAE is available for free.</li>
+      </ul>
+
+      <h2>Contacts</h2>
+      <p>You can write me a letter: <a href="mailto:s.trump@gmail.com">s.trump@gmail.com</a></p>
+{% endblock %}

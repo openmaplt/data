@@ -1,0 +1,21 @@
+{% from 'template/way/way_macros.html' import way_info_block, way_map_block, way_map_js %}
+{% from 'template/object_macros.html' import blocks_toggle, object_tags_block, object_xml_block %}
+          <div class="way" id="object{{way._id}}" data-objectid="{{way._id}}">
+            <div class="row">
+              <div class="span3">
+                <h3>Way {{way._id}}:</h3>
+              </div>
+              {{ blocks_toggle() }}
+            </div>
+            {{ way_info_block(way) }}
+            {{ object_tags_block(way) }}
+            {{ object_xml_block(way) }}
+            {{ way_map_block(way) }}
+            <script language="javascript">
+            function showMap{{way._id}}() {
+              var map = createOsmMap('map{{way._id}}');
+              {{ way_map_js('map', way) }}
+              return map;
+            }
+            </script>
+          </div>

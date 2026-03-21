@@ -1,0 +1,11 @@
+table.table tr.changed td {
+  background-color: #FCF8E3;
+}
+
+table.table tr.new td {
+  background-color: #d9f9d9;
+}
+
+table.table tr.deleted td {
+  background-color: #f9d9d9;
+}

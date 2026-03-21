@@ -1,0 +1,35 @@
+{% extends "template/basepage.html" %}
+
+{% block title %}{{objectType}} {{objectId}} įkeliamas ...{% endblock %}
+
+{% block headerScript %}
+<script language="javascript">
+var counter = 15;
+
+function reloadPage() {
+	window.location.reload();
+}
+
+function updateCountdown() {
+	counter --;
+	var countdown = $("#countdown");
+	countdown.html(counter.toString());
+	if(counter <= 0) {
+		reloadPage();
+	}
+	else {
+		setTimeout(updateCountdown, 1000);
+	}
+}
+
+$(window).load(function() {
+	setTimeout(updateCountdown, 1000);
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>Įkeliama ...</h2>
+<p>{{objectType}} {{objectId}} pridėtas į įkėlimo eilę. Prašome palaukti, kol jis bus pilnai įkeltas iš OSM duombazės.</p>
+<p>Šis puslapis automatiškai persikraus po <span id="countdown">15</span> sek.</p>
+{% endblock %}

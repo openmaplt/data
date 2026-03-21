@@ -1,0 +1,10 @@
+{% extends "template/basepage.html" %}
+
+{% block title %}{{objectType}} {{objectId}} loading error{% endblock %}
+
+{% block content %}
+<h2>Error Loading {{objectType}} {{objectId}}</h2>
+<p>{{objectType}} loading failed:</p>
+<p>{{error.msg}}</p>
+<pre>{{error.stackTrace}}</pre>
+{% endblock %}

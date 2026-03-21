@@ -1,0 +1,20 @@
+               var relationNodes = [];
+               {% for node in relation.nodes %}
+                 relationNodes.push( [{{node.lat}}, {{node.lon}}] );
+               {% endfor %}
+
+               var relationWays = [];
+               var way;
+               {% for way in relation.ways %}
+               wayData = [];
+                 {% for node in way.nodes %}
+                   wayData.push( [{{node.lat}}, {{node.lon}}] );
+                 {% endfor %}
+               relationWays.push(wayData);
+               {% endfor %}
+
+                {%- if color -%}
+                  addRelationToMap({{mapVar}}, {{relation._id}}, relationNodes, relationWays, {{color}});
+            	{%- else -%}
+                  addRelationToMap({{mapVar}}, {{relation._id}}, relationNodes, relationWays);
+            	{%- endif -%}

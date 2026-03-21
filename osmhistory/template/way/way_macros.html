@@ -1,0 +1,56 @@
+          {% macro way_info_block(way) -%}
+            <div class="info-block">
+              <nobr><code>user: {{way.user}} (uid={{way.uid}})</code></nobr>
+              <nobr><code>visible: {{way.visible}}</code></nobr>
+              <nobr><code>timestamp: {{way.timestamp}}</code></nobr>
+              <nobr><code>version: {{way.version}}</code></nobr>
+            </div>
+          {%- endmacro %}
+
+          {% macro way_map_block(way, postfix=None, visible=False, height=200) -%}
+            {%- if visible %}
+            <div class="map-block">
+            {%- else %}
+            <div class="map-block" style="display:none">
+            {%- endif %}
+              <h3>Map</h3>
+              <div id="map{{way._id}}{{postfix if postfix}}" style="height: {{height}}px"></div>
+            </div>
+          {%- endmacro %}
+
+			{% macro way_map_js(mapVar, way, color=None) -%}
+                var wayPoints = [
+                {%- for node in way.nodes -%}
+                  [{{node.lat}}, {{node.lon}}],
+                {% endfor -%}
+                ];
+
+                {%- if color -%}
+                addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color}});
+            	{%- else -%}
+                addWayToMap({{mapVar}}, {{way._id}}, wayPoints);
+            	{%- endif -%}
+            {%- endmacro %}
+
+			{% macro way_map_with_nodes_js(mapVar, way, color=None) -%}
+                var wayPoints = [
+                {%- for node in way.nodes -%}
+                  [{{node.lat}}, {{node.lon}}],
+                {% endfor -%}
+                ];
+
+                {%- if color -%}
+                addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color}});
+            	{%- else -%}
+                addWayToMap({{mapVar}}, {{way._id}}, wayPoints);
+            	{%- endif -%}
+
+            	//Iterate over nodes and add each to the map
+                {%- for node in way.nodes -%}
+	                {%- if color %}
+    		        	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color}});
+        	    	{% else %}
+	        	    	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}});
+            		{% endif -%}
+                {% endfor -%}
+            {%- endmacro %}

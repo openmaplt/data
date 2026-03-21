@@ -1,0 +1,77 @@
+{% extends "template/basepage.html" %}
+
+{% block title %}OSM History viewer{% endblock %}
+{% block headerScript %}
+    <script type="text/javascript">
+    function parseId(input, objectName) {
+      var objectId = parseInt(input.val());
+      if(isNaN(objectId)) {
+        alert("Please, enter "+objectName);
+      }
+      else if(objectId == 0) {
+        alert(objectName+" could not be equal zero. Please, enter valid "+objectName);
+      }
+      else if(objectId < 0) {
+        alert(objectName+" could not be negative. Please, enter valid "+objectName);
+      }
+      else {
+        return objectId;
+      }
+    }
+
+    function showChangesetMap(input) {
+      var changesetId = parseId(input, "Changeset ID");
+
+      if(changesetId) {
+        var redirectUrl = window.location.protocol + "//"+window.location.host + '/changeset/'+changesetId+'/map';
+        window.location = redirectUrl;
+      }
+    }
+
+    function showChangesetDetails(input) {
+      var changesetId = parseId(input, "Changeset ID");
+      if(changesetId) {
+        var redirectUrl = window.location.protocol + "//"+window.location.host + '/changeset/'+changesetId;
+        window.location = redirectUrl;
+      }
+    }
+
+    function showNodeDetails(input) {
+      var nodeId = parseId(input, "Node ID");
+      if(nodeId) {
+        var redirectUrl = window.location.protocol + "//"+window.location.host + '/node/'+nodeId;
+        window.location = redirectUrl;
+      }
+    }
+
+    function showWayDetails(input) {
+      var wayId = parseId(input, "Way ID");
+      if(wayId) {
+        var redirectUrl = window.location.protocol + "//"+window.location.host + '/way/'+wayId;
+        window.location = redirectUrl;
+      }
+    }
+
+    function showRelationDetails(input) {
+      var relationId = parseId(input, "Relation ID");
+      if(relationId) {
+        var redirectUrl = window.location.protocol + "//"+window.location.host + '/relation/'+relationId;
+        window.location = redirectUrl;
+      }
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+      <h2>Changeset</h2>
+      <p class="span2 text-right" style="">Changeset ID:</p><input id="changesetId" class="input-medium span2" type="number"/> <a href="#" class="btn" onclick="showChangesetDetails($('#changesetId'))">Details</a> <a href="#" class="btn" onclick="showChangesetMap($('#changesetId'))">Show map</a>
+
+      <h2>Node</h2>
+      <p class="span2 text-right">Node ID: </p><input id="nodeId" class="input-medium span2" type="number"/> <a href="#" class="btn" onclick="showNodeDetails($('#nodeId'))">Details</a>
+
+      <h2>Way</h2>
+      <p class="span2 text-right">Way ID:</p><input id="wayId" class="input-medium span2" type="number"/> <a href="#" class="btn" onclick="showWayDetails($('#wayId'))">Details</a>
+
+      <h2>Relation</h2>
+      <p class="span2 text-right">Relation ID:</p><input id="relationId" class="input-medium span2" type="number"/> <a href="#" class="btn" onclick="showRelationDetails($('#relationId'))">Details</a>
+{% endblock %}

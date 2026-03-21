@@ -1,0 +1,21 @@
+{% from 'template/relation/relation_macros.html' import relation_info_block, relation_map_block, relation_map_js %}
+{% from 'template/object_macros.html' import blocks_toggle, object_tags_block, object_xml_block %}
+          <div class="relation" id="object{{relation._id}}" data-objectid="{{relation._id}}">
+            <div class="row">
+              <div class="span3">
+                <h3>Relation {{relation._id}}:</h3>
+              </div>
+              {{ blocks_toggle() }}
+            </div>
+            {{ relation_info_block(relation) }}
+            {{ object_tags_block(relation) }}
+            {{ object_xml_block(relation) }}
+            {{ relation_map_block(relation) }}
+            <script language="javascript">
+            function showMap{{relation._id}}() {
+              var map = createOsmMap('map{{relation._id}}');
+              {{ relation_map_js('map', relation) }}
+              return map;
+            }
+            </script>
+          </div>

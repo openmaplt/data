@@ -1,0 +1,66 @@
+          {% macro relation_info_block(relation) -%}
+            <div class="info-block">
+              <nobr><code>user: {{relation.user}} (uid={{relation.uid}})</code></nobr>
+              <nobr><code>visible: {{relation.visible}}</code></nobr>
+              <nobr><code>timestamp: {{relation.timestamp}}</code></nobr>
+              <nobr><code>version: {{relation.version}}</code></nobr>
+            </div>
+          {%- endmacro %}
+
+          {% macro relation_map_block(relation, postfix=None, visible=False, height=200) -%}
+            {%- if visible %}
+            <div class="map-block">
+            {%- else %}
+            <div class="map-block" style="display:none">
+            {%- endif %}
+              <h3>Map</h3>
+              <div id="map{{relation._id}}{{postfix if postfix}}" style="height: {{height}}px"></div>
+            </div>
+          {%- endmacro %}
+
+            {% macro relation_map_js(mapVar, relation, color=None) -%}
+               var relationNodes = [];
+               {% for node in relation.nodes %}
+                 relationNodes.push( [{{node.lat}}, {{node.lon}}] );
+               {% endfor %}
+
+               var relationWays = [];
+               var way;
+               {% for way in relation.ways %}
+               wayData = [];
+                 {% for node in way.nodes %}
+                   wayData.push( [{{node.lat}}, {{node.lon}}] );
+                 {% endfor %}
+               relationWays.push(wayData);
+               {% endfor %}
+
+                {%- if color -%}
+                  addRelationToMap({{mapVar}}, {{relation._id}}, relationNodes, relationWays, {{color}});
+                {%- else -%}
+                  addRelationToMap({{mapVar}}, {{relation._id}}, relationNodes, relationWays);
+                {%- endif -%}
+            {%- endmacro %}
+
+            {% macro relation_content_map_js(mapVar, relation, color=None) -%}
+              {% for node in relation.nodes %}
+                {%- if color %}
+                  addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color}});
+                {% else %}
+                  addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}});
+                {% endif -%}
+              {% endfor %}
+
+              {% for way in relation.ways %}
+                var wayPoints = [
+                {%- for node in way.nodes -%}
+                  [{{node.lat}}, {{node.lon}}],
+                {% endfor -%}
+                ];
+
+                {%- if color -%}
+                  addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color}});
+                {%- else -%}
+                  addWayToMap({{mapVar}}, {{way._id}}, wayPoints);
+                {%- endif -%}
+              {% endfor %}
+            {%- endmacro %}

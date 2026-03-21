@@ -1,0 +1,30 @@
+          {% macro node_info_block(node) -%}
+            <div class="info-block">
+              <nobr><code>lat: {{node.lat}}</code></nobr>
+              <nobr><code>lon: {{node.lon}}</code></nobr>
+              <nobr><code>user: {{node.user}} (uid={{node.uid}})</code></nobr>
+              <nobr><code>visible: {{node.visible}}</code></nobr>
+              <nobr><code>timestamp: {{node.timestamp}}</code></nobr>
+              <nobr><code>version: {{node.version}}</code></nobr>
+            </div>
+          {%- endmacro %}
+
+          {% macro node_map_block(node, postfix=None, visible=False, height=200) -%}
+            {%- if visible %}
+            <div class="map-block">
+            {%- else %}
+            <div class="map-block" style="display:none">
+            {%- endif %}
+              <h3>Map</h3>
+              <div id="map{{node._id}}{{postfix if postfix}}" style="height: {{height}}px"></div>
+            </div>
+          {%- endmacro %}
+
+          {%- macro node_map_js(mapVar, node, color=None) -%}
+                {%- if color -%}
+    	        	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color}});
+            	{%- else -%}
+	            	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}});
+            	{%- endif -%}
+          {%- endmacro -%}
+

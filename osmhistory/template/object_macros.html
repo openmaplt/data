@@ -1,0 +1,75 @@
+          {% macro blocks_toggle(div_class='') -%}
+            <div class="span3{{' '+div_class if div_class}}">
+              <div class="btn-group navs controls blocks-toggle" data-toggle="buttons-checkbox">
+                <button class="btn btn-mini active" type="button" data-value="info">Info</button>
+                <button class="btn btn-mini" type="button" data-value="tags">Tags</button>
+                <button class="btn btn-mini" type="button" data-value="xml">XML</button>
+                <button class="btn btn-mini" type="button" data-value="map">Map</button>
+              </div>
+            </div>
+          {%- endmacro %}
+
+          {% macro object_tags_block(object, show=False) -%}
+            {%- if show %}
+            <div class="tags-block">
+            {%- else %}
+            <div class="tags-block" style="display:none">
+            {%- endif %}
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>  
+                    <th>Key</th>  
+                    <th>Value</th>  
+                  </tr>  
+                </thead>  
+            	<tbody>
+                {% for tag in object.tagsList %}
+                  <tr class="{% if tag.status==1 -%} new
+                  	{%- elif tag.status == 2 -%} changed
+                  	{%- elif tag.status == 3 -%} deleted
+                  	{%- endif -%}
+                  "><td>{{tag.key}}</td><td>{{tag.value}}</td></tr>
+                {% else %}
+                  <tr><td colspan="2">No tags</td></tr>
+            	{% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {%- endmacro %}
+
+          {% macro object_xml_block(object, show=False) -%}
+            {%- if show %}
+            <div class="xml-block">
+            {%- else %}
+            <div class="xml-block" style="display:none">
+            {%- endif %}
+              <h3>XML</h3>
+              <pre class="prettyprint">{{object.xmlString | e}}</pre>
+            </div>
+          {%- endmacro %}
+
+    {%- macro versions_div(urlTemplate, maxVersion, selectedVersion) -%}
+      <div class="pagination">
+        <ul>
+        {%- if selectedVersion==1 %}
+          <li class="disabled"><a href="#">Prev</a></li>
+        {%- else %}
+          <li><a href="{{urlTemplate|format(selectedVersion-1)}}">Prev</a></li>
+        {%- endif %}
+
+        {%- for number in range(maxVersion) %}
+          {%- if selectedVersion==number+1 %}
+            <li class="active"><a href="#">{{number+1}}</a></li>
+          {%- else %}
+            <li><a href="{{urlTemplate|format(number+1)}}">{{number+1}}</a></li>
+          {%- endif %}
+        {% endfor -%}
+
+          {%- if selectedVersion==maxVersion %}
+            <li class="disabled"><a href="#">Next</a></li>
+          {%- else %}
+            <li><a href="{{urlTemplate|format(selectedVersion+1)}}">Next</a></li>
+          {%- endif %}
+        </ul>
+      </div>
+    {%- endmacro -%}
