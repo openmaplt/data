@@ -46,11 +46,7 @@ export default async function ChangesetTable({
           <span className="text-slate-600">{row.id}</span>
         ) : (
           <a
-            href={
-              isApprovedTable
-                ? `https://osmhistory.appspot.com/changeset/${row.id}`
-                : `https://openmap-168413.ew.r.appspot.com/changeset/${row.id}`
-            }
+            href={`https://osmhistory.openmap.lt/changeset/${row.id}`}
             target="_blank"
             rel="noreferrer"
             className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
