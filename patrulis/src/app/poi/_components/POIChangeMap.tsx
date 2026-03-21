@@ -27,7 +27,7 @@ export default function POIChangeMap({ lat, lon }: POIChangeMapProps) {
             longitude: lon,
             zoom: 17,
           }}
-          mapStyle="https://openmap.lt/styles/map.json"
+          mapStyle="https://nextgen.openmap.lt/styles/places.json"
           style={{ width: '100%', height: '100%' }}
         >
           <NavigationControl
@@ -49,7 +49,7 @@ export default function POIChangeMap({ lat, lon }: POIChangeMapProps) {
                   <div className="w-2 h-2 bg-white rounded-full" />
                 </div>
                 {/* Stem part */}
-                <div className="absolute top-[28px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-white" />
+                <div className="absolute top-7 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-8 border-t-white" />
               </div>
             </div>
           </Marker>
