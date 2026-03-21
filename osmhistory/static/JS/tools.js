@@ -1,4 +1,6 @@
 var iconBlue = '#0000FF';
+var iconRed = '#FF0000';
+var iconGreen = '#008000';
 
 // Global registry for active maps
 var osmHistoryMaps = {};

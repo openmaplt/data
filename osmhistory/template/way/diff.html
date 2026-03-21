@@ -54,10 +54,10 @@
               <script language="javascript">
               function showMap{{way._id}}() {
                 var mapLeft = createOsmMap('map{{way._id}}left');
-                {{ way_map_js('mapLeft', way.prevVersion) }}
+                {{ way_map_js('mapLeft', way.prevVersion, color) }}
 
                 var mapRight = createOsmMap('map{{way._id}}right');
-                {{ way_map_js('mapRight', way) }}
+                {{ way_map_js('mapRight', way, color) }}
               }
               </script>
             </div>

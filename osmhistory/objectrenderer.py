@@ -7,10 +7,10 @@ jinja_environment = jinja2.Environment(
 
 class ObjectRenderer():
     @staticmethod
-    def toHtml(obj, htmlTemplate):
+    def toHtml(obj, htmlTemplate, **kwargs):
         """ Render node, way or relation using some template.
             htmlTemplate could be 'toggle', 'diff', 'full' """
-        return obj.renderWith(ObjectRenderer, htmlTemplate)
+        return obj.renderWith(ObjectRenderer, htmlTemplate, **kwargs)
 
     @staticmethod
     def toMapJs(obj, mapVar, color=None):

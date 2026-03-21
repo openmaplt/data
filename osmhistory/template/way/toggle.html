@@ -14,7 +14,7 @@
             <script language="javascript">
             function showMap{{way._id}}() {
               var map = createOsmMap('map{{way._id}}');
-              {{ way_map_js('map', way) }}
+              {{ way_map_js('map', way, color) }}
               return map;
             }
             </script>

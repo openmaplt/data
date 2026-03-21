@@ -54,10 +54,10 @@
               <script language="javascript">
               function showMap{{relation._id}}() {
                 var mapLeft = createOsmMap('map{{relation._id}}left');
-                {{ relation_map_js('mapLeft', relation.prevVersion) }}
+                {{ relation_map_js('mapLeft', relation.prevVersion, color) }}
 
                 var mapRight = createOsmMap('map{{relation._id}}right');
-                {{ relation_map_js('mapRight', relation) }}
+                {{ relation_map_js('mapRight', relation, color) }}
               }
               </script>
             </div>
