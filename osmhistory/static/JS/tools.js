@@ -94,12 +94,12 @@ function addNodeToMap(map, nodeId, lat, lon, color) {
   else if (color == 'blue') colorHex = iconBlue;
   else if (color) colorHex = color;
 
-  var popupHtml = '<a href="/node/' + nodeId + '"><b>Node ' + nodeId + '</b></a>' +
-    '<pre>Lat:' + lat + '\nLon:' + lon + '</pre>';
+  var popupHtml = '<div class="osm-popup-header"><a href="/node/' + nodeId + '">Node ' + nodeId + '</a></div>' +
+    '<div class="osm-popup-coords"><div>Lat: ' + lat.toFixed(6) + '</div><div>Lon: ' + lon.toFixed(6) + '</div></div>';
 
   var marker = new maplibregl.Marker({ color: colorHex })
     .setLngLat([lon, lat])
-    .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(popupHtml))
+    .setPopup(new maplibregl.Popup({ offset: 5 }).setHTML(popupHtml))
     .addTo(map);
 
   map.osmHistoryData.markers.push(marker);
@@ -139,7 +139,7 @@ function addWayToMap(map, wayId, points, color) {
       'properties': {
         'id': String(wayId),
         'color': colorHex,
-        'popupHtml': '<a href="/way/' + wayId + '"><b>Way ' + wayId + '</b></a>'
+        'popupHtml': '<a href="/way/' + wayId + '">Way ' + wayId + '</a>'
       },
       'geometry': {
         'type': 'LineString',
@@ -210,12 +210,12 @@ function addRelationToMap(map, relationId, nodes, ways, color) {
   else if (color == 'blue') colorHex = iconBlue;
   else if (color) colorHex = color;
 
-  var popupHtml = '<a href="/relation/' + relationId + '"><b>Relation ' + relationId + '</b></a>';
+  var popupHtml = '<a href="/relation/' + relationId + '">Relation ' + relationId + '</a>';
 
   for (var i = 0; i < nodes.length; i++) {
     var marker = new maplibregl.Marker({ color: colorHex })
       .setLngLat([nodes[i][1], nodes[i][0]])
-      .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(popupHtml))
+      .setPopup(new maplibregl.Popup({ offset: 10 }).setHTML(popupHtml))
       .addTo(map);
     map.osmHistoryData.markers.push(marker);
     map.osmHistoryData.bounds.extend([nodes[i][1], nodes[i][0]]);
