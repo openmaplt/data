@@ -129,11 +129,7 @@ class OsmApiClient(object):
         refNodes, refWays, refRelations = changeset.getReferences()
 
         total_refs = len(refNodes) + len(refWays) + len(refRelations)
-        print(
-            f"Resolving {total_refs} references ({
-                len(refNodes)} nodes, {
-                len(refWays)} ways, {
-                len(refRelations)} relations)...")
+        print(f"Resolving {total_refs} references ({len(refNodes)} nodes, {len(refWays)} ways, {len(refRelations)} relations)...")
 
         for i, nodeId in enumerate(refNodes):
             if i % 100 == 0 and i > 0:
