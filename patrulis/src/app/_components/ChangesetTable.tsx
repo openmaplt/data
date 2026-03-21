@@ -67,7 +67,7 @@ export default async function ChangesetTable({
     {
       header: 'Komentaras',
       cell: (row) => (
-        <div className="max-w-md truncate text-slate-600" title={row.comment}>
+        <div className="max-w-md text-slate-600">
           {row.comment || (
             <span className="text-slate-400 italic">Nėra komentaro</span>
           )}

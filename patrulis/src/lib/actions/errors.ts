@@ -17,4 +17,5 @@ export async function fixError(id: number, source: string) {
   await db.query('SELECT patrulis.pt_update_status()');
 
   revalidatePath('/klaidos');
+  revalidatePath('/');
 }

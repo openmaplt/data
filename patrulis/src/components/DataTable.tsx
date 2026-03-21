@@ -1,18 +1,19 @@
 import type React from 'react';
 
-interface ColumnBase<T> {
+interface ColumnBase {
   header: string;
   headerClassName?: string;
   cellClassName?: string;
   align?: 'left' | 'center' | 'right';
+  nowrap?: boolean;
 }
 
-interface KeyColumn<T> extends ColumnBase<T> {
+interface KeyColumn<T> extends ColumnBase {
   key: keyof T;
   cell?: never;
 }
 
-interface CellColumn<T> extends ColumnBase<T> {
+interface CellColumn<T> extends ColumnBase {
   key?: never;
   cell: (row: T) => React.ReactNode;
 }
@@ -47,7 +48,7 @@ export default function DataTable<T extends Record<string, unknown>>({
                     : col.align === 'right'
                       ? 'text-right'
                       : 'text-left'
-                } ${col.headerClassName || ''}`}
+                } ${col.nowrap ? 'whitespace-nowrap' : 'whitespace-normal'} ${col.headerClassName || ''}`}
               >
                 {col.header}
               </th>
@@ -77,13 +78,13 @@ export default function DataTable<T extends Record<string, unknown>>({
                 {columns.map((col, colIdx) => (
                   <td
                     key={colIdx}
-                    className={`px-4 py-3 whitespace-nowrap ${
+                    className={`px-4 py-3 ${
                       col.align === 'center'
                         ? 'text-center'
                         : col.align === 'right'
                           ? 'text-right'
                           : 'text-left'
-                    } ${col.cellClassName || ''}`}
+                    } ${col.nowrap ? 'whitespace-nowrap' : 'whitespace-normal'} ${col.cellClassName || ''}`}
                   >
                     {col.cell
                       ? col.cell(row)

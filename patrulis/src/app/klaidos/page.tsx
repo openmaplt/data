@@ -35,12 +35,7 @@ export default async function KlaidosPage() {
     {
       header: 'Aprašymas',
       cell: (row) => (
-        <div
-          className="max-w-xs truncate text-slate-600"
-          title={row.description}
-        >
-          {row.description}
-        </div>
+        <div className="max-w-md text-slate-600">{row.description}</div>
       ),
     },
     {
