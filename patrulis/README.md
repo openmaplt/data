@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OpenMap.lt Patrulis
 
-## Getting Started
+„Patrulis“ – tai specializuotas OpenStreetMap (OSM) duomenų kokybės užtikrinimo ir stebėjimo įrankis, skirtas Lietuvos žemėlapio bendruomenei. 
 
-First, run the development server:
+Ši aplikacija leidžia bendruomenės moderatoriams realiu laiku stebėti naujausius OSM pakeitimus (Changesets), atliktus Lietuvos teritorijoje, įvertinti jų teisingumą ir juos patvirtinti arba atmesti. Detaliai pakeitimų analizei „Patrulis“ naudoja atskirą mikroservisą [OSMHistory](https://osmhistory.openmap.lt).
 
+**Technologijų stekas:**
+- **Karkasas:** Next.js (App Router) / React
+- **Stilizavimas:** TailwindCSS
+- **Duomenų bazė:** PostgreSQL
+
+---
+
+## Kaip paleisti „Patrulį“ lokaliai
+
+Norint paleisti šį projektą savo kompiuteryje (development režimu), atlikite šiuos žingsnius:
+
+### 1. Priklausomybių įdiegimas
+Įsitikinkite, kad turite įdiegtą Node.js ir terminale paleiskite komandą:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Aplinkos kintamieji (Environment Variables)
+Nukopijuokite pavyzdinį kintamųjų failą ir užpildykite reikiamus duomenis (pvz., duomenų bazės prisijungimą):
+```bash
+cp .env.example .env.local
+```
+*(Atsidarykite `.env.local` ir įrašykite savo duomenis)*
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Duomenų bazės paruošimas
+Įsitikinkite, kad jūsų `.env.local` faile įvestas teisingas prisijungimas prie atviro ar vietinio PostgreSQL serverio.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Aplikacijos paleidimas
+Paleiskite lokalų serverį (dev aplinką):
+```bash
+npm run dev
+```
 
-## Learn More
+Dabar galite atsidaryti naršyklę ir eiti adresu: [http://localhost:3000](http://localhost:3000)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Diegimas (Deployment)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Projektas automatiškai publikuojamas produkciniame serveryje naudojant **GitHub Actions** (`.github/workflows/deploy.yml`). 
+Kaskart sukūrus naują `v*.*.*` „release“ talpyklą (tag), Git sistema automatiškai sukuria Docker atvaizdą ir perkrauna serverį (Naudojant `docker-compose.prod.yml`).
