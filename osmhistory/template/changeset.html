@@ -72,6 +72,9 @@
       }
       else {
         blocks.hide();
+        if (blockType == 'map') {
+            stopAllMapObservers();
+        }
       }
 
       var buttons = $(".btn.btn-mini[data-value="+blockType+"]");
@@ -104,17 +107,35 @@
     }
 
     function createObjectMapIfNeeded(objectId) {
-      if(createdMaps.indexOf(objectId)==-1 && $('#object'+objectId+' .map-block').is(':visible')) {
-          createdMaps.push(objectId)
-          window['showMap'+objectId]();
+      var container = $('#object'+objectId);
+      if(container.find('.map-block').is(':visible')) {
+          container.find('.map-block div[id^=map]').each(function() {
+              var divId = this.id;
+              MapLazyLoader.register(divId, function() {
+                  window['showMap'+objectId]();
+              });
+          });
       }
     }
 
     function createAllMaps() {
       $('.node,.way,.relation').each(function (index) {
-        var objectId = parseInt($(this).data('objectid'));
+        var objectId = $(this).data('objectid');
         createObjectMapIfNeeded(objectId)
       });
+    }
+
+    function stopAllMapObservers() {
+        if (MapLazyLoader.observer) {
+            $('.map-block div[id^=map]').each(function() {
+                MapLazyLoader.observer.unobserve(this);
+            });
+            // Also cleanup active maps
+            for (var divId in osmHistoryMaps) {
+               osmHistoryMaps[divId].remove();
+               delete osmHistoryMaps[divId];
+            }
+        }
     }
     </script>
 {% endblock %}

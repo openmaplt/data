@@ -1,142 +1,259 @@
-L.LatLngBounds.prototype.expand = function (that) {
-  if (!this._southWest && !this._northEast) {
-    this._southWest = new L.LatLng(that._southWest.lat, that._southWest.lng, true);
-    this._northEast = new L.LatLng(that._northEast.lat, that._northEast.lng, true);
-  } else {
-    this._southWest.lat = Math.min(that._southWest.lat, this._southWest.lat);
-    this._southWest.lng = Math.min(that._southWest.lng, this._southWest.lng);
-    this._northEast.lat = Math.max(that._northEast.lat, this._northEast.lat);
-    this._northEast.lng = Math.max(that._northEast.lng, this._northEast.lng);
+var iconBlue = '#0000FF';
+
+// Global registry for active maps
+var osmHistoryMaps = {};
+
+function getMapForDiv(divId) {
+  return osmHistoryMaps[divId];
+}
+
+// WebGL Context Management (Lazy Loading)
+var MapLazyLoader = {
+  observer: null,
+  registry: {}, // divId -> { renderFn }
+
+  init: function () {
+    if (this.observer) return;
+    var self = this;
+    this.observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var divId = entry.target.id;
+        var item = self.registry[divId];
+        if (!item) return;
+
+        if (entry.isIntersecting) {
+          if (!osmHistoryMaps[divId]) {
+            // console.log("Creating map:", divId);
+            item.renderFn();
+          }
+        } else {
+          if (osmHistoryMaps[divId]) {
+            // console.log("Removing map:", divId);
+            osmHistoryMaps[divId].remove();
+            delete osmHistoryMaps[divId];
+          }
+        }
+      });
+    }, { rootMargin: '400px' });
+  },
+
+  register: function (divId, renderFn) {
+    this.init();
+    var el = document.getElementById(divId);
+    if (!el) return;
+    this.registry[divId] = { renderFn: renderFn };
+    this.observer.observe(el);
   }
 };
 
-var iconBlue = L.Icon.Default;
-var iconRed = new L.Icon({
-    iconUrl: '/static/leaflet-0.4/images/marker-red.png',
-    iconSize: new L.Point(25, 41),
-    iconAnchor: new L.Point(13, 41),
-    popupAnchor: new L.Point(1, -34),
-    shadowSize: new L.Point(41, 41)
-
-  });
-var iconGreen = new L.Icon({
-    iconUrl: '/static/leaflet-0.4/images/marker-green.png',
-    iconSize: new L.Point(25, 41),
-    iconAnchor: new L.Point(13, 41),
-    popupAnchor: new L.Point(1, -34),
-    shadowSize: new L.Point(41, 41)
-  });
-
 function createOsmMap(divId) {
-  var map = new L.Map(divId);
-  
-  var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-  var osmAttrib = 'Map data (c) OpenStreetMap contributors';
-  var osm = new L.TileLayer(osmUrl, {minZoom: 2, maxZoom: 18, attribution: osmAttrib});   
-  map.addLayer(osm);
+  var map = new maplibregl.Map({
+    container: divId,
+    style: 'https://openmap.lt/styles/map.json',
+    center: [23.9, 55.0],
+    zoom: 6,
+    maxZoom: 22,
+    trackResize: false // Performance boost
+  });
+
+  map.addControl(new maplibregl.NavigationControl());
+
+  osmHistoryMaps[divId] = map;
+
+  // Custom properties to store data for when styles load
+  map.osmHistoryData = {
+    featuresToAdd: [],
+    markers: [],
+    bounds: new maplibregl.LngLatBounds()
+  };
+
+  map.on('load', function () {
+    if (map.osmHistoryData.featuresToAdd.length > 0) {
+      addStoredFeatures(map);
+    }
+  });
+
   return map;
 }
 
-function addNodeToMap(map, nodeId, lat, lon, color) {
-  var options = {};
-  if(color == 'red') options['icon'] = iconRed;
-  else if(color == 'green') options['icon'] = iconGreen;
+function processMapBounds(map) {
+  if (map.osmHistoryData.boundsTimer) clearTimeout(map.osmHistoryData.boundsTimer);
+  map.osmHistoryData.boundsTimer = setTimeout(function () {
+    if (!map.osmHistoryData.bounds.isEmpty()) {
+      map.fitBounds(map.osmHistoryData.bounds, { padding: 50, maxZoom: 15, animate: false });
+    }
+  }, 100);
+}
 
-  var markerLocation = new L.LatLng(lat, lon);
-  var marker = new L.Marker(markerLocation, options);
-  var htmlPopup = '<a href="/node/'+nodeId+'"><b>Node '+nodeId+'</b></a>'+
-  	'<pre>Lat:'+lat+'\nLon:'+lon+'</pre>';
-  marker.bindPopup(htmlPopup);
-  map.addLayer(marker);
-  map.setView(markerLocation, 15);
+function addNodeToMap(map, nodeId, lat, lon, color) {
+  var colorHex = iconBlue;
+  if (color == 'red') colorHex = iconRed;
+  else if (color == 'green') colorHex = iconGreen;
+  else if (color == 'blue') colorHex = iconBlue;
+  else if (color) colorHex = color;
+
+  var popupHtml = '<a href="/node/' + nodeId + '"><b>Node ' + nodeId + '</b></a>' +
+    '<pre>Lat:' + lat + '\nLon:' + lon + '</pre>';
+
+  var marker = new maplibregl.Marker({ color: colorHex })
+    .setLngLat([lon, lat])
+    .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(popupHtml))
+    .addTo(map);
+
+  map.osmHistoryData.markers.push(marker);
+  map.osmHistoryData.bounds.extend([lon, lat]);
+  processMapBounds(map);
+}
+
+function _storeAndRenderFeatures(map, feature) {
+  map.osmHistoryData.featuresToAdd.push(feature);
+  if (map.loaded() || map.isStyleLoaded()) {
+    addStoredFeatures(map);
+  } else {
+    // Only register once if not already added
+    if (!map.osmHistoryData.loadEventAdded) {
+      map.osmHistoryData.loadEventAdded = true;
+      map.once('load', function () { addStoredFeatures(map); });
+    }
+  }
 }
 
 function addWayToMap(map, wayId, points, color) {
-  var options = {};
-  if(color) options['color'] = color;
+  var colorHex = iconBlue;
+  if (color == 'red') colorHex = iconRed;
+  else if (color == 'green') colorHex = iconGreen;
+  else if (color == 'blue') colorHex = iconBlue;
+  else if (color) colorHex = color;
 
-  var bounds;
-  try {
-    bounds = map.getBounds();
-  }
-  catch (error) {
-    //Left bounds uninitialized
+  var coords = [];
+  for (var i = 0; i < points.length; i++) {
+    coords.push([points[i][1], points[i][0]]); // MapLibre takes [lng, lat]
+    map.osmHistoryData.bounds.extend([points[i][1], points[i][0]]);
   }
 
-  if(points.length > 0) {
-    var mapPoints = [];
-    for (var i = 0; i <points.length; i++) {
-      var p1 = new L.LatLng(points[i][0], points[i][1]);
-      mapPoints.push(p1);
+  if (coords.length > 0) {
+    var feature = {
+      'type': 'Feature',
+      'properties': {
+        'id': String(wayId),
+        'color': colorHex,
+        'popupHtml': '<a href="/way/' + wayId + '"><b>Way ' + wayId + '</b></a>'
+      },
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': coords
+      }
     };
-
-    var polyline = new L.Polyline(mapPoints, options);
-    var htmlPopup = '<a href="/way/'+wayId+'"><b>Way '+wayId+'</b></a>';
-    polyline.bindPopup(htmlPopup);
-    map.addLayer(polyline);
-
-    if(bounds) {
-      bounds.expand(polyline.getBounds());
-    }
-    else {
-      bounds = polyline.getBounds();
-    }
-    map.fitBounds(bounds);
+    _storeAndRenderFeatures(map, feature);
+    processMapBounds(map);
   }
+}
+
+function addStoredFeatures(map) {
+  var sourceId = 'osmhistory-lines';
+  var layerId = 'osmhistory-lines-layer';
+
+  if (!map.getSource(sourceId)) {
+    map.addSource(sourceId, {
+      'type': 'geojson',
+      'data': {
+        'type': 'FeatureCollection',
+        'features': map.osmHistoryData.featuresToAdd
+      }
+    });
+
+    map.addLayer({
+      'id': layerId,
+      'type': 'line',
+      'source': sourceId,
+      'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      'paint': {
+        'line-color': ['get', 'color'],
+        'line-width': 4
+      }
+    });
+
+    // Add click event for popup
+    map.on('click', layerId, function (e) {
+      new maplibregl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(e.features[0].properties.popupHtml)
+        .addTo(map);
+    });
+
+    // Change cursor
+    map.on('mouseenter', layerId, function () {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', layerId, function () {
+      map.getCanvas().style.cursor = '';
+    });
+  } else {
+    map.getSource(sourceId).setData({
+      'type': 'FeatureCollection',
+      'features': map.osmHistoryData.featuresToAdd
+    });
+  }
+
+  processMapBounds(map);
 }
 
 function addRelationToMap(map, relationId, nodes, ways, color) {
-  var options = {};
-  if(color) options['color'] = color;
+  var colorHex = iconBlue;
+  if (color == 'red') colorHex = iconRed;
+  else if (color == 'green') colorHex = iconGreen;
+  else if (color == 'blue') colorHex = iconBlue;
+  else if (color) colorHex = color;
 
-  var bounds = null;
-  try {
-    bounds = map.getBounds();
-  }
-  catch (error) {
-    //Left bounds uninitialized
-  }
-  var htmlPopup = '<a href="/relation/'+relationId+'"><b>Relation '+relationId+'</b></a>';
+  var popupHtml = '<a href="/relation/' + relationId + '"><b>Relation ' + relationId + '</b></a>';
 
-  for(var i=0; i<nodes.length; i++) {
-    var markerLocation = new L.LatLng(nodes[i][0], nodes[i][1]);
-    var marker = new L.Marker(markerLocation, options);
-    marker.bindPopup(htmlPopup);
-    map.addLayer(marker);
-    if(bounds === null) {
-      bounds = new L.LatLngBounds(markerLocation, markerLocation);
-    }
-    else {
-      bounds.extend(markerLocation)
-    }
+  for (var i = 0; i < nodes.length; i++) {
+    var marker = new maplibregl.Marker({ color: colorHex })
+      .setLngLat([nodes[i][1], nodes[i][0]])
+      .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(popupHtml))
+      .addTo(map);
+    map.osmHistoryData.markers.push(marker);
+    map.osmHistoryData.bounds.extend([nodes[i][1], nodes[i][0]]);
   }
 
-  for(var i=0; i<ways.length; i++) {
-    var polyline = createPolyline(ways[i]);
-    polyline.bindPopup(htmlPopup);
-    map.addLayer(polyline);
-    if(bounds === null) {
-      bounds = polyline.getBounds();
+  for (var i = 0; i < ways.length; i++) {
+    var coords = [];
+    for (var j = 0; j < ways[i].length; j++) {
+      coords.push([ways[i][j][1], ways[i][j][0]]);
+      map.osmHistoryData.bounds.extend([ways[i][j][1], ways[i][j][0]]);
     }
-    else {
-      bounds.expand(polyline.getBounds());
+
+    if (coords.length > 0) {
+      var feature = {
+        'type': 'Feature',
+        'properties': {
+          'id': String(relationId) + '-' + i,
+          'color': colorHex,
+          'popupHtml': popupHtml
+        },
+        'geometry': {
+          'type': 'LineString',
+          'coordinates': coords
+        }
+      };
+      map.osmHistoryData.featuresToAdd.push(feature);
     }
   }
 
-  if(bounds !== null) {
-    map.fitBounds(bounds);
+  if (map.loaded() || map.isStyleLoaded()) {
+    addStoredFeatures(map);
+  } else {
+    if (!map.osmHistoryData.loadEventAdded) {
+      map.osmHistoryData.loadEventAdded = true;
+      map.once('load', function () { addStoredFeatures(map); });
+    }
   }
+  processMapBounds(map);
 }
 
 function createPolyline(nodes, color) {
-  var options = {};
-  if(color) options['color'] = color;
-
-  var mapPoints = [];
-  for (var i = 0; i <nodes.length; i++) {
-    var p1 = new L.LatLng(nodes[i][0], nodes[i][1]);
-    mapPoints.push(p1);
-  }
-  var polyline = new L.Polyline(mapPoints, options);
-  return polyline;
+  return null;
 }
