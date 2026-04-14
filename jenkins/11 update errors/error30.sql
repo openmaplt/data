@@ -13,7 +13,7 @@ begin
                and not exists (select 1
                                  from planet_osm_polygon l
                                 where st_contains(l.way, p.way)
-                                  and (l.landuse in (''residential'', ''commercial'', ''industrial'', ''allotments'', ''farmland'', ''farmyard'', ''retail'', ''garages'', ''brownfield'')))
+                                  and (l.landuse in (''residential'', ''commercial'', ''industrial'', ''allotments'', ''farmland'', ''farmyard'', ''retail'', ''garages'', ''brownfield'', ''construction'')))
             ) loop
     insert into errors (
       source,
