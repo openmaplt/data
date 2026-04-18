@@ -51,7 +51,7 @@ var MapLazyLoader = {
 function createOsmMap(divId) {
   var map = new maplibregl.Map({
     container: divId,
-    style: 'https://nextgen.openmap.lt/styles/topo.json',
+    style: 'https://openmap.lt/styles/topo.json',
     center: [23.9, 55.0],
     zoom: 6,
     maxZoom: 22,

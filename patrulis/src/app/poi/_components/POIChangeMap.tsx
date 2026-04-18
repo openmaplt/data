@@ -27,7 +27,7 @@ export default function POIChangeMap({ lat, lon }: POIChangeMapProps) {
             longitude: lon,
             zoom: 17,
           }}
-          mapStyle="https://nextgen.openmap.lt/styles/places.json"
+          mapStyle="https://openmap.lt/styles/places.json"
           style={{ width: '100%', height: '100%' }}
         >
           <NavigationControl
