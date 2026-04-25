@@ -24,9 +24,8 @@
                   [{{node.lat}}, {{node.lon}}],
                 {% endfor -%}
                 ];
-
                 {%- if color -%}
-                addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color}});
+                addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color | safe}});
             	{%- else -%}
                 addWayToMap({{mapVar}}, {{way._id}}, wayPoints);
             	{%- endif -%}
@@ -40,7 +39,7 @@
                 ];
 
                 {%- if color -%}
-                addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color}});
+                addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color | safe}});
             	{%- else -%}
                 addWayToMap({{mapVar}}, {{way._id}}, wayPoints);
             	{%- endif -%}
@@ -48,7 +47,7 @@
             	//Iterate over nodes and add each to the map
                 {%- for node in way.nodes -%}
 	                {%- if color %}
-    		        	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color}});
+    		        	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color | safe}});
         	    	{% else %}
 	        	    	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}});
             		{% endif -%}

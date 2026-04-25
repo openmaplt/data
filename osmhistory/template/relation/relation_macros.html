@@ -35,7 +35,7 @@
                {% endfor %}
 
                 {%- if color -%}
-                  addRelationToMap({{mapVar}}, {{relation._id}}, relationNodes, relationWays, {{color}});
+                  addRelationToMap({{mapVar}}, {{relation._id}}, relationNodes, relationWays, {{color | safe}});
                 {%- else -%}
                   addRelationToMap({{mapVar}}, {{relation._id}}, relationNodes, relationWays);
                 {%- endif -%}
@@ -44,7 +44,7 @@
             {% macro relation_content_map_js(mapVar, relation, color=None) -%}
               {% for node in relation.nodes %}
                 {%- if color %}
-                  addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color}});
+                  addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color | safe}});
                 {% else %}
                   addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}});
                 {% endif -%}
@@ -58,7 +58,7 @@
                 ];
 
                 {%- if color -%}
-                  addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color}});
+                  addWayToMap({{mapVar}}, {{way._id}}, wayPoints, {{color | safe}});
                 {%- else -%}
                   addWayToMap({{mapVar}}, {{way._id}}, wayPoints);
                 {%- endif -%}

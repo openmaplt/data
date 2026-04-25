@@ -22,7 +22,7 @@
 
           {%- macro node_map_js(mapVar, node, color=None) -%}
                 {%- if color -%}
-    	        	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color}});
+    	        	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}}, {{color | safe}});
             	{%- else -%}
 	            	addNodeToMap({{mapVar}}, {{node._id}}, {{node.lat}}, {{node.lon}});
             	{%- endif -%}
