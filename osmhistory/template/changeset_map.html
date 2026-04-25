@@ -34,11 +34,11 @@
       var mapBefore = createOsmMap('mapBefore');
 
       {% for obj in changeset.modified %}
-        {{ renderer.toMapJs(obj.prevVersion, 'mapBefore', '\'blue\'') }}
+        {{ renderer.toMapJs(obj.prevVersion, 'mapBefore', '\'blue\'') | safe }}
       {% endfor %}
 
       {% for obj in changeset.deleted %}
-        {{ renderer.toMapJs(obj, 'mapBefore', '\'red\'') }}
+        {{ renderer.toMapJs(obj, 'mapBefore', '\'red\'') | safe }}
       {% endfor %}
     }
 
@@ -46,11 +46,11 @@
       var mapAfter = createOsmMap('mapAfter');
 
       {% for obj in changeset.created %}
-        {{ renderer.toMapJs(obj, 'mapAfter', '\'green\'') }}
+        {{ renderer.toMapJs(obj, 'mapAfter', '\'green\'') | safe }}
       {% endfor %}
 
       {% for obj in changeset.modified %}
-        {{ renderer.toMapJs(obj, 'mapAfter', '\'blue\'') }}
+        {{ renderer.toMapJs(obj, 'mapAfter', '\'blue\'') | safe }}
       {% endfor %}
     }
     </script>

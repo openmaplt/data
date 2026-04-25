@@ -186,7 +186,7 @@
         <!-- Right column -->
         <div class="span6">
         {% for obj in changeset.created %}
-           {{ renderer.toHtml(obj, 'toggle', color="'green'") }}
+           {{ renderer.toHtml(obj, 'toggle', color="'green'") | safe }}
         {% endfor %}
         </div>
       </div>
@@ -198,7 +198,7 @@
       <hr/>
 
       {% for obj in changeset.modified %}
-         {{ renderer.toHtml(obj, 'diff', color="'blue'") }}
+         {{ renderer.toHtml(obj, 'diff', color="'blue'") | safe }}
       {% endfor %}
     </div>
 
@@ -210,7 +210,7 @@
         <!-- Left column -->
         <div class="span6">
         {% for obj in changeset.deleted %}
-           {{ renderer.toHtml(obj, 'toggle', color="'red'") }}
+           {{ renderer.toHtml(obj, 'toggle', color="'red'") | safe }}
         {% endfor %}
         </div>
 

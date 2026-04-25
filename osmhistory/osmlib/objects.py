@@ -78,7 +78,7 @@ class OsmObject(object):
 
 
 class Changeset(OsmObject):
-    FORMAT_VERSION = 3
+    FORMAT_VERSION = 4
 
     def __init__(this, _id, xmlString=None):
         this._id = _id
@@ -174,7 +174,7 @@ class Changeset(OsmObject):
 
 
 class Node(OsmObject):
-    FORMAT_VERSION = 2
+    FORMAT_VERSION = 3
 
     def __init__(this, _id=-1, version=-1, parentChangeset=None):
         # super(Node, this).__init__()
@@ -216,7 +216,7 @@ class Node(OsmObject):
 
 
 class Way(OsmObject):
-    FORMAT_VERSION = 2
+    FORMAT_VERSION = 3
 
     def __init__(this, _id=-1, version=-1, parentChangeset=None):
         # super(Way, this).__init__()
@@ -270,7 +270,7 @@ class Way(OsmObject):
 
 
 class Relation(OsmObject):
-    FORMAT_VERSION = 2
+    FORMAT_VERSION = 3
 
     def __init__(this, _id=-1, version=-1, parentChangeset=None):
         # super(Relation, this).__init__()

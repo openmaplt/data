@@ -15,7 +15,8 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    autoescape=jinja2.select_autoescape(['html', 'xml']))
 
 # --- Background Task Workers ---
 
