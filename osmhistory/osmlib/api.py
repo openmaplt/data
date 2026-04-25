@@ -1,7 +1,7 @@
 import time
 import requests
 from xml import dom
-from xml.dom.minidom import parseString
+from defusedxml.minidom import parseString
 from .objects import OsmObject, Changeset, Node, Way, Relation
 from datetime import datetime
 
