@@ -1,6 +1,6 @@
-FROM python:3.14-slim
+FROM python:3.14-alpine
 
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+RUN apk update && apk upgrade --no-cache
 
 WORKDIR /app
 
