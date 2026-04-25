@@ -241,7 +241,7 @@ export async function getPOIDetail(
              p.attr->>'religion' as old_religion, c.religion as new_religion,
              p.attr->>'denomination' as old_denomination, c.denomination as new_denomination,
              p.attr->>'official_name' as old_official_name, c.official_name as new_official_name,
-             p.attr->>'attraction:type' as old_attraction_type, c."attraction:type" as new_attraction_type,
+             p.attr->>'attraction:type' as old_attractiontype, c."attraction:type" as new_attractiontype,
              p.attr->>'distance' as old_distance, c.distance as new_distance,
              p.attr->>'natural' as old_natural, c."natural" as new_natural,
              c.lon as new_lat_raw, c.lat as new_lon_raw,
