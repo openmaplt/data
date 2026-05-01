@@ -16,7 +16,7 @@ export async function getPOIChanges(
     SELECT c.obj_type
          , c.osm_id
          , c.x_type
-         , COALESCE(c.name, p.attr->>'name') as name
+         , COALESCE(c.name, p.attr->>'name', c.official_name, p.attr->>'official_name') as name
     FROM places.poi_change c
     LEFT JOIN places.poi p ON c.osm_id = p.osm_id AND c.obj_type = p.obj_type AND c.x_type = 'D'
     ORDER BY CASE WHEN c.x_type = 'D' THEN 1 WHEN c.x_type = 'C' THEN 2 ELSE 3 END, 2

@@ -115,7 +115,7 @@ export default async function POIListPage({
                   : 'bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 active:scale-95'
               }`}
             >
-              Sekantis
+              Kitas
             </Link>
           </div>
         </div>
