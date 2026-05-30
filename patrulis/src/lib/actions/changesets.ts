@@ -1,13 +1,14 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { unauthorized } from 'next/navigation';
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 export async function approveChangeset(id: string) {
   const user = await getAuthUser();
   if (!user) {
-    throw new Error('Not authenticated');
+    unauthorized();
   }
 
   await db.query(
@@ -30,7 +31,7 @@ export async function approveChangeset(id: string) {
 export async function unapproveChangeset(id: string) {
   const user = await getAuthUser();
   if (!user) {
-    throw new Error('Not authenticated');
+    unauthorized();
   }
 
   await db.query(

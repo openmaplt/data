@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { loginAction } from '@/lib/actions/auth';
+import { Suspense } from 'react';
 import { isAuthenticated } from '@/lib/auth';
 import LoginForm from './_components/LoginForm';
 
@@ -8,5 +8,9 @@ export default async function LoginPage() {
     redirect('/');
   }
 
-  return <LoginForm loginAction={loginAction} />;
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
 }

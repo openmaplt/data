@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { redirect, unauthorized } from 'next/navigation';
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 
@@ -15,7 +15,7 @@ export async function acceptPOIChange(
 ) {
   const user = await getAuthUser();
   if (!user) {
-    throw new Error('Not authenticated');
+    unauthorized();
   }
 
   // select places.accept_change(osm_id, obj_type, x_type)
@@ -43,7 +43,7 @@ export async function transferPOI(
 ) {
   const user = await getAuthUser();
   if (!user) {
-    throw new Error('Not authenticated');
+    unauthorized();
   }
 
   // select places.transfer_id(old_osm_id, old_type, new_osm_id, new_type, change, uid)

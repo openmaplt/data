@@ -1,30 +1,42 @@
+import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 
-const SESSION_COOKIE_NAME = 'patrulis_session';
+interface SessionData {
+  username?: string;
+}
 
-export async function setAuthSession() {
-  (await cookies()).set(SESSION_COOKIE_NAME, 'authenticated', {
+const sessionOptions = {
+  password: process.env.SESSION_SECRET as string,
+  cookieName: 'patrulis_session',
+  cookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 24 * 30, // 30 dienos
     path: '/',
-  });
+  },
+};
+
+async function getSession() {
+  return getIronSession<SessionData>(await cookies(), sessionOptions);
+}
+
+export async function setAuthSession(username: string) {
+  const session = await getSession();
+  session.username = username;
+  await session.save();
 }
 
 export async function clearAuthSession() {
-  (await cookies()).delete(SESSION_COOKIE_NAME);
+  const session = await getSession();
+  session.destroy();
 }
 
-export async function isAuthenticated() {
-  const session = (await cookies()).get(SESSION_COOKIE_NAME);
-  return session?.value === 'authenticated';
+export async function isAuthenticated(): Promise<boolean> {
+  const session = await getSession();
+  return !!session.username;
 }
 
 export async function getAuthUser(): Promise<string | null> {
-  const isAuth = await isAuthenticated();
-  if (!isAuth) {
-    return null;
-  }
-
-  return process.env.ADMIN_USERNAME || 'admin';
+  const session = await getSession();
+  return session.username ?? null;
 }

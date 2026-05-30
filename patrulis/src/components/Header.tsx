@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { logoutAction } from '@/lib/actions/auth';
-import { isAuthenticated } from '@/lib/auth';
+import { getAuthUser } from '@/lib/auth';
 import { getUnapprovedCount } from '@/lib/data/changesets';
 import { getErrorCount } from '@/lib/data/errors';
 import { getPOICount } from '@/lib/data/poi';
@@ -10,7 +10,8 @@ import MobileMenu from './MobileMenu';
 import NavLink from './NavLink';
 
 export default async function Header() {
-  const isAuth = await isAuthenticated();
+  const authUser = await getAuthUser();
+  const isAuth = !!authUser;
   const unapprovedCount = await getUnapprovedCount();
   const errorCount = await getErrorCount();
   const poiCount = await getPOICount();
@@ -87,6 +88,9 @@ export default async function Header() {
 
             {isAuth ? (
               <div className="flex items-center space-x-4">
+                <span className="text-sm text-slate-500 hidden sm:block">
+                  {authUser}
+                </span>
                 <form action={logoutAction}>
                   <button
                     type="submit"
