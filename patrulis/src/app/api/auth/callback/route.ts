@@ -4,7 +4,8 @@ import { setAuthSession } from '@/lib/auth';
 import { isAdmin } from '@/lib/data/admins';
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = process.env.APP_URL ?? new URL(request.url).origin;
   const code = searchParams.get('code');
   const state = searchParams.get('state');
 
