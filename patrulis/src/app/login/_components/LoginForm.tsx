@@ -1,5 +1,6 @@
 'use client';
 
+import { Map } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -42,13 +43,7 @@ export default function LoginForm() {
           href="/api/auth/login"
           className="group flex w-full items-center justify-center gap-3 py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all shadow-lg shadow-blue-500/25"
         >
-          <svg
-            viewBox="0 0 256 256"
-            className="w-5 h-5 fill-white"
-            aria-hidden="true"
-          >
-            <path d="M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24Zm71.87 144H152v-32h47.87a88.19 88.19 0 0 1 0 32ZM40.13 152H88v32H56.13a88.19 88.19 0 0 1-16-32Zm16-48H88V72h31.88a88 88 0 0 0-63.75 32ZM104 72h48v32h-48Zm64 0h15.87a88 88 0 0 0-63.75-32H136Zm15.87 112H152v24.35a88.27 88.27 0 0 0 27.87-24.35ZM136 208.35V184h16v24.35a88.27 88.27 0 0 1-16 0ZM104 184v24.35a88.27 88.27 0 0 1-16-24.35Zm-16 0H72.13A88.27 88.27 0 0 1 56.13 152H88Zm0-64H40.13a88.19 88.19 0 0 1 16-32H88Zm16 0v-32h48v32Zm64 0v-32h15.87a88 88 0 0 1 16 32Z" />
-          </svg>
+          <Map className="w-5 h-5" />
           Prisijungti per OpenStreetMap
         </a>
       </div>
