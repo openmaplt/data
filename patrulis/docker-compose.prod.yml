@@ -12,6 +12,7 @@ services:
       - OSM_CLIENT_ID=${OSM_CLIENT_ID}
       - OSM_CLIENT_SECRET=${OSM_CLIENT_SECRET}
       - SESSION_SECRET=${SESSION_SECRET}
+      - APP_URL=${APP_URL}
       - PORT=3000
     extra_hosts:
       - "host.docker.internal:host-gateway"

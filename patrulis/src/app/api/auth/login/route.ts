@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  const origin = new URL(request.url).origin;
+  const origin = process.env.APP_URL ?? new URL(request.url).origin;
   const redirectUri = `${origin}/api/auth/callback`;
 
   const codeVerifier = randomBytes(32).toString('base64url');
