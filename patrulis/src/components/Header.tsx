@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import { logoutAction } from '@/lib/actions/auth';
 import { getAuthUser } from '@/lib/auth';
-import { getAddressDiffCountForAdmin, hasMunicipalitiesAssigned } from '@/lib/data/addresses';
+import {
+  getAddressDiffCountForAdmin,
+  hasMunicipalitiesAssigned,
+} from '@/lib/data/addresses';
 import { getUnapprovedCount } from '@/lib/data/changesets';
 import { getErrorCount } from '@/lib/data/errors';
 import { getPOICount } from '@/lib/data/poi';
@@ -17,8 +20,11 @@ export default async function Header() {
   const errorCount = await getErrorCount();
   const poiCount = await getPOICount();
   const newUserCount = await getNewUsersCount();
-  const showAddresses = isAuth ? await hasMunicipalitiesAssigned(authUser) : false;
-  const addressCount = isAuth && showAddresses ? await getAddressDiffCountForAdmin(authUser) : 0;
+  const showAddresses = isAuth
+    ? await hasMunicipalitiesAssigned(authUser)
+    : false;
+  const addressCount =
+    isAuth && showAddresses ? await getAddressDiffCountForAdmin(authUser) : 0;
 
   const menuItems = [
     {
@@ -46,7 +52,14 @@ export default async function Header() {
       color: 'bg-amber-500',
     },
     ...(showAddresses
-      ? [{ name: 'Adresai', href: '/adresai', count: addressCount, color: 'bg-teal-500' }]
+      ? [
+          {
+            name: 'Adresai',
+            href: '/adresai',
+            count: addressCount,
+            color: 'bg-teal-500',
+          },
+        ]
       : []),
   ];
 

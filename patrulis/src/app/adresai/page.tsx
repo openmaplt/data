@@ -1,8 +1,12 @@
-import { redirect } from 'next/navigation';
 import { MapPin, Plus, Trash2 } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import DataTable, { type Column } from '@/components/DataTable';
 import { getAuthUser, isAuthenticated } from '@/lib/auth';
-import { type AddressDiffItem, getAddressDiff, getMunicipalitiesForAdmin } from '@/lib/data/addresses';
+import {
+  type AddressDiffItem,
+  getAddressDiff,
+  getMunicipalitiesForAdmin,
+} from '@/lib/data/addresses';
 import MunicipalityPicker from './_components/MunicipalityPicker';
 
 interface Props {
@@ -26,8 +30,11 @@ export default async function AddressesPage({ searchParams }: Props) {
   }
 
   const { municipality } = await searchParams;
-  const selectedId = municipality ? parseInt(municipality, 10) : municipalities[0].id;
-  const selected = municipalities.find((m) => m.id === selectedId) ?? municipalities[0];
+  const selectedId = municipality
+    ? parseInt(municipality, 10)
+    : municipalities[0].id;
+  const selected =
+    municipalities.find((m) => m.id === selectedId) ?? municipalities[0];
 
   const diffs = await getAddressDiff(selected.id);
 
@@ -69,7 +76,9 @@ export default async function AddressesPage({ searchParams }: Props) {
     },
     {
       header: 'Pastaba',
-      cell: (row) => <span className="text-slate-500 text-sm">{row.note ?? '—'}</span>,
+      cell: (row) => (
+        <span className="text-slate-500 text-sm">{row.note ?? '—'}</span>
+      ),
     },
     {
       header: 'JOSM',
@@ -100,10 +109,15 @@ export default async function AddressesPage({ searchParams }: Props) {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Adresai</h1>
-          <p className="text-slate-500 mt-1">Adresų skirtumai, kuriuos reikia sutvarkyti OpenStreetMap.</p>
+          <p className="text-slate-500 mt-1">
+            Adresų skirtumai, kuriuos reikia sutvarkyti OpenStreetMap.
+          </p>
         </div>
         <div className="flex items-center gap-3">
-          <MunicipalityPicker municipalities={municipalities} selectedId={selected.id} />
+          <MunicipalityPicker
+            municipalities={municipalities}
+            selectedId={selected.id}
+          />
           <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg border border-blue-100 text-sm font-medium whitespace-nowrap">
             Iš viso: <span className="font-bold">{diffs.length}</span>
           </div>

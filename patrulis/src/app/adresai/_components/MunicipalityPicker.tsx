@@ -8,7 +8,10 @@ interface Props {
   selectedId: number;
 }
 
-export default function MunicipalityPicker({ municipalities, selectedId }: Props) {
+export default function MunicipalityPicker({
+  municipalities,
+  selectedId,
+}: Props) {
   const router = useRouter();
 
   return (

@@ -20,7 +20,9 @@ export type AddressDiffItem = {
   note: string | null;
 };
 
-export async function getMunicipalitiesForAdmin(username: string): Promise<Municipality[]> {
+export async function getMunicipalitiesForAdmin(
+  username: string,
+): Promise<Municipality[]> {
   const result = await db.query(
     `SELECT s.id, s.sav_kod AS code, s.pavadinimas AS name
        FROM patrulis.admin_savivaldybes asv
@@ -33,7 +35,9 @@ export async function getMunicipalitiesForAdmin(username: string): Promise<Munic
   return result.rows;
 }
 
-export async function getAddressDiff(municipalityId: number): Promise<AddressDiffItem[]> {
+export async function getAddressDiff(
+  municipalityId: number,
+): Promise<AddressDiffItem[]> {
   const result = await db.query(
     `SELECT ad.id, ad.type, ad.city, ad.street, ad.housenumber, ad.unit,
             ad.action_open, ad.action, ad.x, ad.y, ad.note
@@ -46,7 +50,9 @@ export async function getAddressDiff(municipalityId: number): Promise<AddressDif
   return result.rows;
 }
 
-export async function hasMunicipalitiesAssigned(username: string): Promise<boolean> {
+export async function hasMunicipalitiesAssigned(
+  username: string,
+): Promise<boolean> {
   const result = await db.query(
     `SELECT 1 FROM patrulis.admin_savivaldybes asv
        JOIN patrulis.admins a ON a.id = asv.admin_id
@@ -57,7 +63,9 @@ export async function hasMunicipalitiesAssigned(username: string): Promise<boole
   return (result.rowCount ?? 0) > 0;
 }
 
-export async function getAddressDiffCountForAdmin(username: string): Promise<number> {
+export async function getAddressDiffCountForAdmin(
+  username: string,
+): Promise<number> {
   const result = await db.query(
     `SELECT count(1) AS total
        FROM address.address_diff ad
