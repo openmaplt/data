@@ -10,5 +10,7 @@ create view address.address_source as
 
 create index vilnius_addresses_idx on address.vilnius_addresses (gyv_pav,pav);
 
+update address.vilnius_addresses set pav = 'Verkių Riešės g.' where pav = 'Riešės g.' and namo_nr = '65';
+
 truncate table address.status;
 insert into address.status values ('13');
