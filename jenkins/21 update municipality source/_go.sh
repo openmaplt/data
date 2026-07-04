@@ -1,4 +1,7 @@
 #!/bin/bash
+sav_kodas=$(echo "$1" | awk '{print $1}')
+echo Savivaldybės kodas: $sav_kodas
+
 # Bendri duomenys
 wget -N --backups=0 -q https://www.registrucentras.lt/aduomenys/?byla=adr_gyvenamosios_vietoves.csv -O gyvenvietes.csv
 wget -N --backups=0 -q https://www.registrucentras.lt/aduomenys/?byla=adr_gatves.csv -O gatves.csv
@@ -6,10 +9,10 @@ wget -N --backups=0 -q https://www.registrucentras.lt/aduomenys/?byla=adr_gatves
 psql osm -U osm < bendri_duomenys.sql
 
 # Konkrečių savivaldybių duomenys
-wget -N --backups=0 -q https://www.registrucentras.lt/aduomenys/?byla=adr_stat_25.csv -O adresai.csv
+wget -N --backups=0 -q https://www.registrucentras.lt/aduomenys/?byla=adr_stat_${sav_kodas}.csv -O adresai.csv
 psql osm -U osm < copy_full.sql
 
-wget -N --backups=0 -q https://www.registrucentras.lt/aduomenys/?byla=adr_gra_25.json -O adresai.geojson
+wget -N --backups=0 -q https://www.registrucentras.lt/aduomenys/?byla=adr_gra_${sav_kodas}.json -O adresai.geojson
 
 ogr2ogr -f PostgreSQL \
   PG:"dbname=osm user=osm password= host=localhost port=5432" \
@@ -22,4 +25,4 @@ ogr2ogr -f PostgreSQL \
   -nln addresses \
   adresai.geojson
 
-psql osm -U osm < update_status.sql
+psql osm -U osm -v sav_kodas="$sav_kodas" < update_status.sql

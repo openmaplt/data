@@ -1,5 +1,5 @@
 truncate table address.status;
-insert into address.status values ('25');
+insert into address.status values (:sav_kodas);
 
 drop view if exists address.address_source;
 create view address.address_source as
