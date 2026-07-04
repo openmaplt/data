@@ -9,6 +9,7 @@ l_atstumas float;
 l_osm_geom geometry;
 l_osm_id bigint;
 l_osm_type text;
+l_object_type text;
 l_x float;
 l_y float;
 l_t float;
@@ -31,6 +32,10 @@ begin
     l_found = false;
     l_too_far = false;
     for cc in (select osm_id
+                     ,case when geom_type = 'N' then 'node'
+                           when geom_type = 'P' then 'way'
+                           else ''
+                      end AS type
                      ,geom_type
                      ,st_distance(st_transform(geom, 3346), st_transform(c.geom, 3346)) distance
                      ,geom
@@ -46,6 +51,7 @@ begin
       l_found = true;
       l_osm_id = cc.osm_id;
       l_osm_type = cc.geom_type;
+      l_object_type = cc.type;
       if cc.distance > 50 then
         l_too_far = true;
         l_atstumas = cc.distance;
@@ -118,7 +124,7 @@ begin
        ,c.unit
        ,round(st_x(st_transform(c.geom, 4326))::numeric,6)
        ,round(st_y(st_transform(c.geom, 4326))::numeric,6)
-       ,'http://localhost:8111/load_and_zoom?top=' || l_t || '&bottom=' || l_b || '&left=' || l_l || '&right=' || l_r
+       ,'http://localhost:8111/load_and_zoom?top=' || l_t || '&bottom=' || l_b || '&left=' || l_l || '&right=' || l_r || '&select=' || l_object_type || l_osm_id
        ,'Per toli: ' || l_atstumas || 'm.'
        ,c.geom
        ,l_osm_geom
