@@ -1,6 +1,6 @@
 'use client';
 
-import { Map } from 'lucide-react';
+import { Map as MapIcon } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -43,7 +43,7 @@ export default function LoginForm() {
           href="/api/auth/login"
           className="group flex w-full items-center justify-center gap-3 py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all shadow-lg shadow-blue-500/25"
         >
-          <Map className="w-5 h-5" />
+          <MapIcon className="w-5 h-5" />
           Prisijungti per OpenStreetMap
         </a>
       </div>
