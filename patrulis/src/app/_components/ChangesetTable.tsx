@@ -1,7 +1,7 @@
 import { Check, Clock, ExternalLink, RotateCcw } from 'lucide-react';
 import DataTable, { type Column } from '@/components/DataTable';
 import { approveChangeset, unapproveChangeset } from '@/lib/actions/changesets';
-import { isAuthenticated } from '@/lib/auth';
+import { isFullAdmin } from '@/lib/auth';
 import type { Changeset } from '@/lib/data/changesets';
 import StatusIcon from './StatusIcon';
 
@@ -23,7 +23,7 @@ export default async function ChangesetTable({
   data,
   isApprovedTable,
 }: ChangesetTableProps) {
-  const isAuth = await isAuthenticated();
+  const isAuth = await isFullAdmin();
 
   const columns: Column<Changeset>[] = [
     {

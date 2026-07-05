@@ -1,13 +1,13 @@
 import { Check, Clock } from 'lucide-react';
 import DataTable, { type Column } from '@/components/DataTable';
 import { fixError } from '@/lib/actions/errors';
-import { isAuthenticated } from '@/lib/auth';
+import { isFullAdmin } from '@/lib/auth';
 import { type ErrorItem, getErrorCount, getErrors } from '@/lib/data/errors';
 
 export default async function KlaidosPage() {
   const errors = await getErrors();
   const totalCount = await getErrorCount();
-  const isAuth = await isAuthenticated();
+  const isAuth = await isFullAdmin();
 
   const columns: Column<ErrorItem>[] = [
     {
