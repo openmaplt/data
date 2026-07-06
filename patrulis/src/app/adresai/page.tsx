@@ -1,20 +1,16 @@
 import { MapPin, Plus, Trash2 } from 'lucide-react';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import DataTable, { type Column } from '@/components/DataTable';
 import { getAuthUser, isAuthenticated } from '@/lib/auth';
 import {
   type AddressDiffItem,
   getAddressDiff,
-  getAddressDiffCount,
   getMunicipalitiesForAdmin,
 } from '@/lib/data/addresses';
 import MunicipalityPicker from './_components/MunicipalityPicker';
 
-const PAGE_SIZE = 100;
-
 interface Props {
-  searchParams: Promise<{ municipality?: string; page?: string }>;
+  searchParams: Promise<{ municipality?: string }>;
 }
 
 export default async function AddressesPage({ searchParams }: Props) {
@@ -33,20 +29,14 @@ export default async function AddressesPage({ searchParams }: Props) {
     );
   }
 
-  const { municipality, page: pageParam } = await searchParams;
+  const { municipality } = await searchParams;
   const selectedId = municipality
     ? parseInt(municipality, 10)
     : municipalities[0].id;
   const selected =
     municipalities.find((m) => m.id === selectedId) ?? municipalities[0];
 
-  const page = Number(pageParam) || 1;
-
-  const [diffs, totalCount] = await Promise.all([
-    getAddressDiff(selected.id, page, PAGE_SIZE),
-    getAddressDiffCount(selected.id),
-  ]);
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const diffs = await getAddressDiff(selected.id);
 
   const columns: Column<AddressDiffItem>[] = [
     {
@@ -129,7 +119,7 @@ export default async function AddressesPage({ searchParams }: Props) {
             selectedId={selected.id}
           />
           <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg border border-blue-100 text-sm font-medium whitespace-nowrap">
-            Iš viso: <span className="font-bold">{totalCount}</span>
+            Iš viso: <span className="font-bold">{diffs.length}</span>
           </div>
         </div>
       </div>
@@ -141,37 +131,6 @@ export default async function AddressesPage({ searchParams }: Props) {
         emptyMessage="Šiai savivaldybei skirtumų nėra!"
         getRowClassName={() => 'bg-white hover:bg-slate-50'}
       />
-
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between px-2 py-4 border-t border-slate-100 pt-8">
-          <div className="text-sm text-slate-500 font-medium">
-            Puslapis <span className="text-slate-900 font-bold">{page}</span> iš{' '}
-            <span className="text-slate-900 font-bold">{totalPages}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/adresai?municipality=${selected.id}&page=${page - 1}`}
-              className={`px-4 py-2 text-sm font-semibold rounded-lg border border-slate-200 transition-all ${
-                page <= 1
-                  ? 'bg-slate-50 text-slate-300 pointer-events-none'
-                  : 'bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 active:scale-95'
-              }`}
-            >
-              Ankstesnis
-            </Link>
-            <Link
-              href={`/adresai?municipality=${selected.id}&page=${page + 1}`}
-              className={`px-4 py-2 text-sm font-semibold rounded-lg border border-slate-200 transition-all ${
-                page >= totalPages
-                  ? 'bg-slate-50 text-slate-300 pointer-events-none'
-                  : 'bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 active:scale-95'
-              }`}
-            >
-              Kitas
-            </Link>
-          </div>
-        </div>
-      )}
 
       <div className="hidden">
         <iframe name="josm" title="JOSM interface" />

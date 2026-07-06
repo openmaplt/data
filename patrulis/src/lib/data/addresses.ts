@@ -37,34 +37,17 @@ export async function getMunicipalitiesForAdmin(
 
 export async function getAddressDiff(
   municipalityId: number,
-  page = 1,
-  pageSize = 100,
 ): Promise<AddressDiffItem[]> {
-  const offset = (page - 1) * pageSize;
   const result = await db.query(
     `SELECT ad.id, ad.type, ad.city, ad.street, ad.housenumber, ad.unit,
             ad.action_open, ad.action, ad.x, ad.y, ad.note
        FROM address.address_diff ad
        JOIN address.savivaldybes s ON s.sav_kod = ad.sav_kod
       WHERE s.id = $1
-      ORDER BY ad.city, ad.street, ad.housenumber
-      LIMIT $2 OFFSET $3`,
-    [municipalityId, pageSize, offset],
-  );
-  return result.rows;
-}
-
-export async function getAddressDiffCount(
-  municipalityId: number,
-): Promise<number> {
-  const result = await db.query(
-    `SELECT count(1) AS total
-       FROM address.address_diff ad
-       JOIN address.savivaldybes s ON s.sav_kod = ad.sav_kod
-      WHERE s.id = $1`,
+      ORDER BY ad.city, ad.street, ad.housenumber`,
     [municipalityId],
   );
-  return parseInt(result.rows[0].total, 10);
+  return result.rows;
 }
 
 export async function hasMunicipalitiesAssigned(
