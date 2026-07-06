@@ -1,13 +1,13 @@
-import { Check, MapPin, Plus, Trash2 } from 'lucide-react';
+import { MapPin, Plus, Trash2 } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import DataTable, { type Column } from '@/components/DataTable';
-import { deleteAddressDiff } from '@/lib/actions/addresses';
 import { getAuthUser, isAuthenticated } from '@/lib/auth';
 import {
   type AddressDiffItem,
   getAddressDiff,
   getMunicipalitiesForAdmin,
 } from '@/lib/data/addresses';
+import DeleteAddressButton from './_components/DeleteAddressButton';
 import MunicipalityPicker from './_components/MunicipalityPicker';
 
 interface Props {
@@ -37,7 +37,7 @@ export default async function AddressesPage({ searchParams }: Props) {
   const selected =
     municipalities.find((m) => m.id === selectedId) ?? municipalities[0];
 
-  const diffs = await getAddressDiff(selected.id);
+  const diffs = await getAddressDiff(selected.code);
 
   const columns: Column<AddressDiffItem>[] = [
     {
@@ -100,14 +100,7 @@ export default async function AddressesPage({ searchParams }: Props) {
           >
             Veiksmas
           </a>
-          <form action={deleteAddressDiff.bind(null, row.id)}>
-            <button
-              type="submit"
-              className="inline-flex items-center gap-1 text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded border border-emerald-200 hover:bg-emerald-200 transition-all font-bold uppercase tracking-wider cursor-pointer"
-            >
-              <Check className="w-3 h-3" /> Pataisyta
-            </button>
-          </form>
+          <DeleteAddressButton id={row.id} />
         </div>
       ),
     },
