@@ -1,15 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { unauthorized } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 export async function fixError(id: number, source: string) {
-  const user = await getAuthUser();
-  if (!user) {
-    unauthorized();
-  }
+  await requireAdmin();
 
   await db.query(
     'UPDATE errors SET fixed = 1 WHERE error_id = $1 AND source = $2',

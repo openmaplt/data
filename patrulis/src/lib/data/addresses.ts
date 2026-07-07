@@ -36,16 +36,15 @@ export async function getMunicipalitiesForAdmin(
 }
 
 export async function getAddressDiff(
-  municipalityId: number,
+  savKod: string,
 ): Promise<AddressDiffItem[]> {
   const result = await db.query(
     `SELECT ad.id, ad.type, ad.city, ad.street, ad.housenumber, ad.unit,
             ad.action_open, ad.action, ad.x, ad.y, ad.note
        FROM address.address_diff ad
-       JOIN address.savivaldybes s ON s.sav_kod = ad.sav_kod
-      WHERE s.id = $1
+      WHERE ad.sav_kod = $1
       ORDER BY ad.city, ad.street, ad.housenumber`,
-    [municipalityId],
+    [savKod],
   );
   return result.rows;
 }

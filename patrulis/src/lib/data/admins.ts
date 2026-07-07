@@ -1,9 +1,13 @@
 import { db } from '@/lib/db';
 
-export async function isAdmin(username: string): Promise<boolean> {
+export type AdminRole = 'admin' | 'editor';
+
+export async function getAdminRole(
+  username: string,
+): Promise<AdminRole | null> {
   const result = await db.query(
-    'SELECT 1 FROM patrulis.admins WHERE osm_username = $1',
+    'SELECT role FROM patrulis.admins WHERE osm_username = $1',
     [username],
   );
-  return (result.rowCount ?? 0) > 0;
+  return (result.rows[0]?.role as AdminRole | undefined) ?? null;
 }

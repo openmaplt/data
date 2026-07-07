@@ -1,12 +1,12 @@
 import { Check, ExternalLink, Mail, X } from 'lucide-react';
 import DataTable, { type Column } from '@/components/DataTable';
 import { updateUserStatus } from '@/lib/actions/users';
-import { isAuthenticated } from '@/lib/auth';
+import { isFullAdmin } from '@/lib/auth';
 import { getNewUsers, type OSUser } from '@/lib/data/users';
 
 export default async function NaujokaiPage() {
   const users = await getNewUsers();
-  const isAuth = await isAuthenticated();
+  const isAuth = await isFullAdmin();
 
   const columns: Column<OSUser>[] = [
     {

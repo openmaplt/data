@@ -1,15 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { unauthorized } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 export async function updateUserStatus(userid: string, status: 'I' | 'N') {
-  const user = await getAuthUser();
-  if (!user) {
-    unauthorized();
-  }
+  await requireAdmin();
   try {
     // 1. Update status
     await db.query(

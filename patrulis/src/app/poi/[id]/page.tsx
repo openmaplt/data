@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { acceptPOIChange, transferPOI } from '@/lib/actions/poi';
-import { isAuthenticated } from '@/lib/auth';
+import { isFullAdmin } from '@/lib/auth';
 import { getPOIDetail, getPOIPotentialTransfers } from '@/lib/data/poi';
 
 import POIChangeMap from '../_components/POIChangeMap';
@@ -23,7 +23,7 @@ export default async function POIDetailPage({
 }: POIDetailPageProps) {
   const { id } = await params;
   const { tp } = await searchParams;
-  const isAuth = await isAuthenticated();
+  const isAuth = await isFullAdmin();
 
   const { details, info } = await getPOIDetail(id, tp);
   const transfers =

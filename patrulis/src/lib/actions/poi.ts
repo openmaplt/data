@@ -1,8 +1,8 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect, unauthorized } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { requireAdmin } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 /**
@@ -13,10 +13,7 @@ export async function acceptPOIChange(
   obj_type: string,
   x_type: string,
 ) {
-  const user = await getAuthUser();
-  if (!user) {
-    unauthorized();
-  }
+  await requireAdmin();
 
   // select places.accept_change(osm_id, obj_type, x_type)
   await db.query('SELECT places.accept_change($1, $2, $3)', [
@@ -41,10 +38,7 @@ export async function transferPOI(
   change: string,
   uid: number,
 ) {
-  const user = await getAuthUser();
-  if (!user) {
-    unauthorized();
-  }
+  await requireAdmin();
 
   // select places.transfer_id(old_osm_id, old_type, new_osm_id, new_type, change, uid)
   await db.query('SELECT places.transfer_id($1, $2, $3, $4, $5, $6)', [

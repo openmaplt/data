@@ -7,6 +7,7 @@ import {
   getAddressDiff,
   getMunicipalitiesForAdmin,
 } from '@/lib/data/addresses';
+import DeleteAddressButton from './_components/DeleteAddressButton';
 import MunicipalityPicker from './_components/MunicipalityPicker';
 
 interface Props {
@@ -36,7 +37,7 @@ export default async function AddressesPage({ searchParams }: Props) {
   const selected =
     municipalities.find((m) => m.id === selectedId) ?? municipalities[0];
 
-  const diffs = await getAddressDiff(selected.id);
+  const diffs = await getAddressDiff(selected.code);
 
   const columns: Column<AddressDiffItem>[] = [
     {
@@ -99,6 +100,7 @@ export default async function AddressesPage({ searchParams }: Props) {
           >
             Veiksmas
           </a>
+          <DeleteAddressButton id={row.id} />
         </div>
       ),
     },

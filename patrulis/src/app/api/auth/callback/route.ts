@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { setAuthSession } from '@/lib/auth';
-import { isAdmin } from '@/lib/data/admins';
+import { getAdminRole } from '@/lib/data/admins';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -61,7 +61,9 @@ export async function GET(request: Request) {
   const { user } = await userRes.json();
   const username: string = user.display_name;
 
-  if (!(await isAdmin(username))) {
+  const role = await getAdminRole(username);
+
+  if (!role) {
     return NextResponse.redirect(
       new URL(
         `/login?error=noaccess&user=${encodeURIComponent(username)}`,
@@ -70,7 +72,9 @@ export async function GET(request: Request) {
     );
   }
 
-  await setAuthSession(username);
+  await setAuthSession(username, role);
 
-  return NextResponse.redirect(new URL('/', origin));
+  return NextResponse.redirect(
+    new URL(role === 'editor' ? '/adresai' : '/', origin),
+  );
 }
