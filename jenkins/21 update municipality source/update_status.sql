@@ -1,6 +1,10 @@
 truncate table address.status;
 insert into address.status values (:sav_kodas);
 
+-- Jei adresas neturi gatvės, jam priskiriamas gatvės kodas 0
+delete from address.gatves where gat_kodas = 0;
+insert into address.gatves (gat_kodas, vardas_k) values (0, null);
+
 drop view if exists address.address_source;
 create view address.address_source as
   select objectid AS id
@@ -15,7 +19,7 @@ create view address.address_source as
         ,address.gatves ga
    where a.aob_kodas = f.aob_kodas
      and gy.gyv_kodas = a.gyv_kodas
-     and ga.gyv_kodas = a.gyv_kodas
+     and (ga.gyv_kodas = a.gyv_kodas or ga.gat_kodas = 0)
      and ga.gat_kodas = a.gat_kodas
 ;
 

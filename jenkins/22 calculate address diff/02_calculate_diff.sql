@@ -19,8 +19,10 @@ l_r float;
 l_add_tags text;
 begin
   select sav_kod into l_sav_kod from address.status;
+  raise notice 'Skaičiuojama savivaldybė %', l_sav_kod;
   delete from address.address_diff where sav_kod = l_sav_kod;
   update address.address_osm set addr_found = null;
+  raise notice 'Pasiruošta skaičiavimui';
   for c in (select city
                   ,street
                   ,housenumber
@@ -41,7 +43,7 @@ begin
                      ,geom
                  from address.address_osm
                 where c.city = city
-                  and c.street = street
+                  and coalesce(c.street, '') = street
                   and c.housenumber = housenumber
                   and coalesce(c.unit::text, '!@#') = coalesce(unit,'!@#')
                   and addr_found is null
@@ -67,9 +69,16 @@ begin
     l_r = l_x * 1.0001;
     if not l_found then
       raise notice 'Trūksta adreso: % % %', c.city, c.street, c.housenumber;
-      l_add_tags = 'addr%3Acity=' || replace(c.city, ' ', '%20') || '%7C' ||
-                   'addr%3Astreet=' || replace(c.street, ' ', '%20') || '%7C' ||
-                   'addr%3Ahousenumber=' || c.housenumber;
+      if c.street is not null then
+        l_add_tags = 'addr%3Acity=' || replace(c.city, ' ', '%20') || '%7C' ||
+                     'addr%3Astreet=' || replace(c.street, ' ', '%20') || '%7C' ||
+                     'addr%3Ahousenumber=' || c.housenumber;
+      else
+        l_add_tags = 'addr%3Acity=' || replace(c.city, ' ', '%20') || '%7C' ||
+                     'addr%3Aplace=' || replace(c.city, ' ', '%20') || '%7C' ||
+                     'addr%3Anostreet=yes%7C' ||
+                     'addr%3Ahousenumber=' || c.housenumber;
+      end if;
       if c.unit is not null then
         l_add_tags = l_add_tags || '%7C' || 'addr%3Aunit=' || c.unit;
       end if;

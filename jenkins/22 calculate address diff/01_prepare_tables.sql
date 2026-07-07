@@ -3,7 +3,7 @@ create table address.address_osm as
   select osm_id
         ,'N' geom_type
         ,"addr:city" city
-        ,"addr:street" street
+        ,coalesce("addr:street", '') street
         ,"addr:housenumber" housenumber
         ,"addr:unit" unit
         ,null::char addr_found
@@ -17,7 +17,7 @@ create table address.address_osm as
   select osm_id
         ,'P' geom_type
         ,"addr:city" city
-        ,"addr:street" street
+        ,coalesce("addr:street", '') street
         ,"addr:housenumber" housenumber
         ,"addr:unit" unit
         ,null::char addr_found
