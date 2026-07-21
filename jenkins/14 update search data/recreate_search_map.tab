@@ -1,0 +1,46 @@
+drop table if exists public.search_map;
+create table public.search_map as
+  select osm_id * 3 AS id
+        ,'ADR' AS type
+        ,"addr:housename" AS name
+        ,get_address("addr:city", "addr:street", "addr:housenumber", "addr:unit") AS address
+        ,jsonb_build_object('name', get_address("addr:city", "addr:street", "addr:housenumber", "addr:unit")) AS attr
+        ,st_transform(way,4326) AS geom
+    from planet_osm_point
+   where "addr:city" is not null
+     and "addr:approximate" is null
+     and "addr:contact" is null
+  union all
+  select osm_id * 3 + 1 AS id
+        ,'ADR' AS type
+        ,"addr:housename" AS name
+        ,get_address("addr:city", "addr:street", "addr:housenumber", "addr:unit") AS address
+        ,jsonb_build_object('name', get_address("addr:city", "addr:street", "addr:housenumber", "addr:unit")) AS attr
+        ,st_transform(st_pointonsurface(way), 4326) AS geom
+    from planet_osm_polygon
+   where "addr:city" is not null
+     and "addr:approximate" is null
+     and "addr:contact" is null
+  union all
+  select id * 3 + 2 AS id
+        ,attr->>'type' AS type
+        ,attr->>'name' AS name
+        ,attr->>'address' AS address
+        ,attr
+        ,st_transform(geom,4326) AS geom
+    from places.poi
+;
+
+--CREATE TEXT SEARCH CONFIGURATION public.lt_unaccent (COPY = lithuanian);
+--ALTER TEXT SEARCH CONFIGURATION public.lt_unaccent
+--    ALTER MAPPING FOR asciiword, word, hword, hword_part, hword_asciipart
+--    WITH unaccent, lithuanian_stem;
+
+alter table public.search_map add column name_tsvector tsvector generated always as (to_tsvector('lt_unaccent', coalesce(name, ''))) stored;
+alter table public.search_map add column addr_tsvector tsvector generated always as (to_tsvector('lt_unaccent', coalesce(address, ''))) stored;
+
+create index search_map_name_trgm_idx on public.search_map using gin (get_unaccent(name) gin_trgm_ops);
+create index search_map_addr_trgm_idx on public.search_map using gin (get_unaccent(address) gin_trgm_ops);
+
+create index search_map_name_tsvector on public.search_map using gin (name_tsvector);
+create index search_map_addr_tsvector on public.search_map using gin (addr_tsvector);
