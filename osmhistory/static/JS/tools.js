@@ -1,6 +1,3 @@
-import * as maplibregl from 'https://unpkg.com/maplibre-gl@^6.0.0/dist/maplibre-gl.mjs';
-window.maplibregl = maplibregl;
-
 var iconBlue = '#0000FF';
 var iconRed = '#FF0000';
 var iconGreen = '#008000';
@@ -262,3 +259,4 @@ function addRelationToMap(map, relationId, nodes, ways, color) {
 function createPolyline(nodes, color) {
   return null;
 }
+

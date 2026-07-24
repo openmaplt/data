@@ -34,7 +34,11 @@
     {% block headerScript %}{%endblock%}
     <!-- MapLibre GL JS -->
     <link href="https://unpkg.com/maplibre-gl@^6.0.0/dist/maplibre-gl.css" rel="stylesheet" />
-    <script src="/static/JS/tools.js" type="module"></script>
+    <script type="module">
+      import * as maplibregl from 'https://unpkg.com/maplibre-gl@^6.0.0/dist/maplibre-gl.mjs';
+      window.maplibregl = maplibregl;
+    </script>
+    <script src="/static/JS/tools.js"></script>
   </head>
 
   <body>
