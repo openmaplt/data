@@ -1,3 +1,6 @@
+import * as maplibregl from 'https://unpkg.com/maplibre-gl@^6.0.0/dist/maplibre-gl.mjs';
+window.maplibregl = maplibregl;
+
 var iconBlue = '#0000FF';
 var iconRed = '#FF0000';
 var iconGreen = '#008000';
