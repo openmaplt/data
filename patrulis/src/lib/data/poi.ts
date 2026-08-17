@@ -148,6 +148,7 @@ export async function getPOIDetail(
              attr->>'attraction:type' as old_attractiontype, null as new_attractiontype,
              attr->>'distance' as old_distance, null as new_distance,
              attr->>'natural' as old_natural, null as new_natural,
+             attr->>'cuisine' as old_cuisine, null as new_cuisine,
              st_y(geom) as old_lat_raw, st_x(geom) as old_lon_raw,
              null as new_lat_raw, null as new_lon_raw
       FROM places.poi
@@ -197,6 +198,7 @@ export async function getPOIDetail(
              null as old_attractiontype, "attraction:type" as new_attractiontype,
              null as old_distance, distance as new_distance,
              null as old_natural, "natural" as new_natural,
+             null as old_cuisine, cuisine as new_cuisine,
              lon as new_lat_raw, lat as new_lon_raw,
              null as old_lat_raw, null as old_lon_raw
       FROM places.poi_change
@@ -245,6 +247,7 @@ export async function getPOIDetail(
              p.attr->>'attraction:type' as old_attractiontype, c."attraction:type" as new_attractiontype,
              p.attr->>'distance' as old_distance, c.distance as new_distance,
              p.attr->>'natural' as old_natural, c."natural" as new_natural,
+             p.attr->>'cuisine' as old_cuisine, c.cuisine as new_cuisine,
              c.lon as new_lat_raw, c.lat as new_lon_raw,
              st_y(p.geom) as old_lat_raw, st_x(p.geom) as old_lon_raw
       FROM places.poi_change c
