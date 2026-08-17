@@ -96,6 +96,7 @@ export async function getPOIDetail(
     'attraction:type',
     'distance',
     'natural',
+    'cuisine',
   ];
 
   let query = '';
