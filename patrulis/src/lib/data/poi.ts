@@ -341,13 +341,14 @@ export async function getPOIPotentialTransfers(
          , pos.name
          , pos.osm_id
          , pos.obj_type
-         , del.id
+         , p.id
          , del.uid
          , del.osm_id as old_id
          , del.obj_type as old_type
          , pos.x_type
     FROM places.poi_change pos
        , places.poi_change del
+    LEFT JOIN places.poi p ON del.osm_id = p.osm_id AND del.obj_type = p.obj_type
     WHERE del.osm_id = $1
       AND del.obj_type = $2
       AND pos.x_type != 'D'
