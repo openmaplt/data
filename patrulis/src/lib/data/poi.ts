@@ -321,6 +321,7 @@ export async function getPOIDetail(
 }
 
 export type POITransfer = {
+  id: number;
   uid: number;
   obj_type: string;
   osm_id: number;
@@ -340,6 +341,7 @@ export async function getPOIPotentialTransfers(
          , pos.name
          , pos.osm_id
          , pos.obj_type
+         , del.id
          , del.uid
          , del.osm_id as old_id
          , del.obj_type as old_type
