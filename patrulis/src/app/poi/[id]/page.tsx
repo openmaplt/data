@@ -177,7 +177,7 @@ export default async function POIDetailPage({
                       t.osm_id,
                       t.obj_type,
                       t.x_type,
-                      t.uid,
+                      t.id,
                     )}
                   >
                     <button
