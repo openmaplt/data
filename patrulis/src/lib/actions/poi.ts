@@ -51,6 +51,6 @@ export async function transferPOI(
   ]);
 
   revalidatePath('/poi');
-  revalidatePath(`/poi/${old_type}${old_osm_id}`);
-  revalidatePath('/');
+  revalidatePath(`/`);
+  redirect('/poi');
 }
