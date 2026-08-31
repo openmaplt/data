@@ -9,6 +9,7 @@ create table places.poi (
  ,historic text
  ,site_type text
  ,ref_lt_kpd text
+ ,rating int
  ,geom geometry(point,4326)
 );
 
@@ -17,5 +18,6 @@ comment on column places.poi.osm_type is 'Object type: n - node, w - way, r - re
 comment on column places.poi.osm_id is 'Open street map object id';
 comment on column places.poi.attr is 'Array of ordered place attributes, formatted for displaying';
 comment on column places.poi.x is 'Column is used during POI update, it helps find POIs which no longer exist in OSM';
+comment on column places.poi.rating is 'Objects rating. Values from 10 (lowest) to 50 (highest). null - no rating.';
 
 create index poi_gix on places.poi using gist(geom);

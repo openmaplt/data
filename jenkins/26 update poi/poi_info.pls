@@ -76,7 +76,7 @@ begin
     SELECT st_transform(ST_Expand(st_transform(geom, 3346), 150), 4326) AS expanded_box
           ,type
           ,id::text as id
-          ,attr AS properties
+          ,jsonb_set(attr, '{rating}', to_jsonb(rating)) AS properties
           ,geom
       FROM places.poi
      WHERE id = (p_params->>'id')::bigint
